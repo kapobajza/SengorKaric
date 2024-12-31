@@ -1,0 +1,11 @@
+{
+  "name": "toolkit",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {},
+  "devDependencies": {
+    "@types/node": "20.14.7",
+    "tsx": "4.19.2",
+    "yaml": "2.7.0"
+  }
+}

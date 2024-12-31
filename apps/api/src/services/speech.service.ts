@@ -2,20 +2,17 @@ import fp from "fastify-plugin";
 import { FastifyCustomProp } from "@/api/types/app.types";
 import speech from "@google-cloud/speech";
 import { readFileSync } from "fs";
-import { spawnSync } from "child_process";
 import path from "path";
+import { getRelativeMonoRepoPath } from "@/toolkit/util";
 
 export type SpeechService = {
   transcribe: (base64Content: string) => Promise<string>;
 };
 
-const getRootPath = () => {
-  return spawnSync("git", ["rev-parse", "--show-toplevel"])
-    .stdout.toString()
-    .trim();
-};
-
-const credentialsPath = path.join(getRootPath(), "gc_service_acc.json");
+const credentialsPath = path.join(
+  getRelativeMonoRepoPath("api"),
+  "gc_service_acc.json",
+);
 const credentials = JSON.parse(readFileSync(credentialsPath, "utf8"));
 
 export default fp((fastify, _opts, done) => {
