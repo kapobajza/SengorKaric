@@ -1,7 +1,9 @@
+import { Readable } from "stream";
+
 import type { FastifyInstance } from "fastify";
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import { z } from "zod";
-import { Readable } from "stream";
+
 import {
   createInternalServerErrorReply,
   createValidationErrorReply,

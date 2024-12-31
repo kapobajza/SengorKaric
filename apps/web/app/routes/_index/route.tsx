@@ -7,10 +7,12 @@ import {
   Slate,
   withReact,
 } from "slate-react";
-import { SlateAudioElement } from "@web/types/slate";
-import AudioRecord from "./AudioRecord";
 import { useMutation } from "@tanstack/react-query";
 import { withHistory } from "slate-history";
+
+import { SlateAudioElement } from "@/web/types/slate";
+
+import AudioRecord from "./AudioRecord";
 
 const AudioElement = ({
   attributes,

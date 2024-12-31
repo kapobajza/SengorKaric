@@ -1,8 +1,9 @@
-import { getRootPath, strToPascalCase, applyPrettier } from "@/toolkit/util";
 import fs from "fs";
 import path from "path";
 
 import yaml from "yaml";
+
+import { getRootPath, strToPascalCase, applyPrettier } from "@/toolkit/util";
 
 function generateProjectNameTypes() {
   const rootPath = getRootPath();

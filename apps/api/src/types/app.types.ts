@@ -1,4 +1,5 @@
 import { z } from "zod";
+
 import type { EnvRecord } from "@/api/env/util";
 
 export const appEnvArgSchema = z.union([

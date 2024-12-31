@@ -1,9 +1,11 @@
-import fp from "fastify-plugin";
-import { FastifyCustomProp } from "@/api/types/app.types";
-import speech from "@google-cloud/speech";
 import { readFileSync } from "fs";
 import path from "path";
+
+import speech from "@google-cloud/speech";
+import fp from "fastify-plugin";
 import { getRelativeMonoRepoPath } from "@/toolkit/util";
+
+import { FastifyCustomProp } from "@/api/types/app.types";
 
 export type SpeechService = {
   transcribe: (base64Content: string) => Promise<string>;
