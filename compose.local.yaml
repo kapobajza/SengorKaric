@@ -1,0 +1,47 @@
+name: sengor-karic-local
+
+services:
+  api:
+    build:
+      dockerfile: ./apps/api/Dockerfile
+      target: local
+    env_file: ./apps/api/.env.local
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.entrypoints=api"
+    ports:
+      - "5050:5050"
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./apps/api
+          target: /app/apps/api
+          ignore:
+            - ./apps/api/node_modules/
+            - ./apps/api/build/
+        - action: rebuild
+          path: ./apps/api/package.json
+          target: /app/apps/api
+
+  web:
+    build:
+      dockerfile: ./apps/web/Dockerfile
+      target: local
+    env_file: ./apps/web/.env.local
+    environment:
+      - HOST=0.0.0.0
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.web.entrypoints=web"
+    ports:
+      - "3000:3000"
+    develop:
+      watch:
+        - action: sync
+          path: ./apps/web
+          target: /app/apps/web
+          ignore:
+            - ./apps/web/node_modules/
+            - ./apps/web/build/
+            - ./apps/web/.react-router/
+    

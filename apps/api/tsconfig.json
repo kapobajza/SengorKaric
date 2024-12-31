@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.strictest.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/api/*": ["./src/*"]
+    }
+  },
+  "include": ["**/*.ts", "**/*.tsx"]
+}

@@ -1,0 +1,15 @@
+pre-commit:
+  parallel: true
+  commands:
+    prettier:
+      files: git diff --name-only --staged
+      glob: "*.{js,ts,jsx,tsx,json,svelte}"
+      run: |
+        set -e
+        npx prettier --write {files}
+        git add {files}
+commit-msg:
+  parallel: true
+  commands:
+    commitlint:
+      run: npx commitlint --edit
