@@ -52,6 +52,7 @@ async function main() {
         process.exit(1);
       }
 
+      // eslint-disable-next-line no-console
       console.log(`server listening on ${address}`);
     },
   );

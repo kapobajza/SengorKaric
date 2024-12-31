@@ -5,7 +5,7 @@
   "scripts": {
     "web:dev": "pnpm --filter web run dev",
     "api:dev": "pnpm --filter api run dev",
-    "postinstall": "[ -z $CI ] && lefthook install || true"
+    "postinstall": "node ./scripts/postinstall.js"
   },
   "keywords": [],
   "author": "",
