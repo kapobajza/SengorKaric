@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://sengorkaric.ba/">
-    <img alt="logo" height="150" src="./.github/resources/todo_logo.png">
+    <img alt="logo" height="60" src="./.github/resources/logo.png">
     <h2 align="center">Sengor Karić official web app</h2>
   </a>
 </p>
