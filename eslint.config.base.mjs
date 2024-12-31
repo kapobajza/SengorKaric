@@ -6,6 +6,24 @@ import react from "eslint-plugin-react";
 import importPlugin from "eslint-plugin-import";
 import eslintConfigPrettier from "eslint-config-prettier";
 
+const __dirname = new URL(".", import.meta.url).pathname;
+
+export const generateTSLanguageOptions = () => ({
+  languageOptions: {
+    parserOptions: {
+      projectService: true,
+      tsconfigRootDir: __dirname,
+    },
+  },
+  settings: {
+    "import/resolver": {
+      typescript: {
+        project: "./tsconfig.json",
+      },
+    },
+  },
+});
+
 export default tseslint.config(
   {
     files: ["**/*.{ts,tsx}"],
@@ -17,6 +35,7 @@ export default tseslint.config(
       "@typescript-eslint/consistent-type-definitions": ["error", "type"],
       "@typescript-eslint/restrict-template-expressions": "off",
       "@typescript-eslint/only-throw-error": "off",
+      "@typescript-eslint/return-await": ["off"],
     },
   },
   {

@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "tsx watch ./src/start.ts",
     "debug": "tsx --inspect-brk ./src/start.ts",
-    "start": "tsx ./src/start.ts"
+    "start": "tsx ./src/start.ts",
+    "lint": "eslint"
   },
   "dependencies": {
     "@fastify/auth": "5.0.2",

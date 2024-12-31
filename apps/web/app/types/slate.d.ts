@@ -22,6 +22,7 @@ export type FormattedText = { text: string; bold?: true };
 export type CustomText = FormattedText;
 
 declare module "slate" {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface CustomTypes {
     Editor: CustomEditor;
     Element: CustomElement;

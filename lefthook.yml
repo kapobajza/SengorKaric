@@ -8,8 +8,44 @@ pre-commit:
         set -e
         npx prettier --write {files}
         git add {files}
+    lint:
+      files: git diff --name-only --staged
+      glob: "*.{js,ts,jsx,tsx,svelte}"
+      run: |
+        set -e
+        npx lefthook run lint
+        git add {files}
+
 commit-msg:
   parallel: true
   commands:
     commitlint:
       run: npx commitlint --edit
+
+lint:
+  parallel: true
+  commands:
+    api:
+      files: git diff --name-only --staged
+      run: |
+        set -e
+        path="apps/api"
+        modified_files=$(node ./scripts/relative_file_paths.js --path $path)
+        cd $path
+        pnpm run --filter api lint ${modified_files} --fix
+    toolkit:
+      files: git diff --name-only --staged
+      run: |
+        set -e
+        path="libs/toolkit"
+        modified_files=$(node ./scripts/relative_file_paths.js --path $path)
+        cd $path
+        pnpm run --filter toolkit lint ${modified_files} --fix
+    web:
+      files: git diff --name-only --staged
+      run: |
+        set -e
+        path="apps/web"
+        modified_files=$(node ./scripts/relative_file_paths.js --path $path)
+        cd $path
+        pnpm run --filter web lint ${modified_files} --fix

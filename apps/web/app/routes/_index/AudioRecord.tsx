@@ -29,13 +29,13 @@ export default function AudioRecord({
       mediaRecorderRef.current = mediaRecorder;
 
       mediaRecorder.ondataavailable = (event) => {
-        console.log("Blob MIME type:", event.data.type);
         onRecordingStop(event.data); // Pass the audio data to the callback
       };
 
       mediaRecorder.start();
       setIsRecording(true);
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error("Error accessing microphone:", error);
     }
   };
@@ -43,7 +43,9 @@ export default function AudioRecord({
   const stopRecording = () => {
     if (mediaRecorderRef.current && streamRef.current) {
       mediaRecorderRef.current.stop();
-      streamRef.current.getTracks().forEach((track) => track.stop()); // Stop all tracks
+      streamRef.current.getTracks().forEach((track) => {
+        track.stop();
+      }); // Stop all tracks
     }
     setIsRecording(false);
   };
@@ -52,7 +54,7 @@ export default function AudioRecord({
     if (isRecording) {
       stopRecording();
     } else {
-      startRecording();
+      void startRecording();
     }
   };
 

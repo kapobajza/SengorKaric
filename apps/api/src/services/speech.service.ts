@@ -13,7 +13,10 @@ const credentialsPath = path.join(
   getRelativeMonoRepoPath("api"),
   "gc_service_acc.json",
 );
-const credentials = JSON.parse(readFileSync(credentialsPath, "utf8"));
+const credentials = JSON.parse(readFileSync(credentialsPath, "utf8")) as Record<
+  string,
+  string
+>;
 
 export default fp((fastify, _opts, done) => {
   const speechService: SpeechService = {

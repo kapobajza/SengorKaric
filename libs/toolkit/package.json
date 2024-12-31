@@ -2,7 +2,9 @@
   "name": "toolkit",
   "version": "1.0.0",
   "description": "",
-  "scripts": {},
+  "scripts": {
+    "lint": "eslint"
+  },
   "devDependencies": {
     "@types/node": "20.14.7",
     "tsx": "4.19.2",

@@ -64,7 +64,9 @@ export default function SlateEditor() {
         throw new Error("Failed to upload audio");
       }
 
-      const json = await response.json();
+      const json = (await response.json()) as {
+        text: string;
+      };
       const url = URL.createObjectURL(data);
 
       const audioNode: Node = {
@@ -102,13 +104,7 @@ export default function SlateEditor() {
         }}
         disabled={isPending}
       />
-      <Slate
-        editor={editor}
-        onChange={(value) => {
-          console.log(value);
-        }}
-        initialValue={initialValue}
-      >
+      <Slate editor={editor} initialValue={initialValue}>
         <Editable
           renderElement={renderElement}
           placeholder="Enter some text..."
