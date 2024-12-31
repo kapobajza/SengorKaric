@@ -53,6 +53,10 @@ Or if you want to start docker in watch mode, so that you can watch file changes
 docker compose -f compose.local.yaml watch
 ```
 
+After the app starts, you can access it on [http://localhost:3000](http://localhost:3000) (if you're using the default port).
+
+The API can be accessed on [http://localhost:5050](http://localhost:5050).
+
 ### Commit messages
 
 When committing changes you should follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification.

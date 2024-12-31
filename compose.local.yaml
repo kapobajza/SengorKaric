@@ -6,9 +6,6 @@ services:
       dockerfile: ./apps/api/Dockerfile
       target: local
     env_file: ./apps/api/.env.local
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.api.entrypoints=api"
     ports:
       - "5050:5050"
     develop:
@@ -30,9 +27,6 @@ services:
     env_file: ./apps/web/.env.local
     environment:
       - HOST=0.0.0.0
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.web.entrypoints=web"
     ports:
       - "3000:3000"
     develop:

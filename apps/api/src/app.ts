@@ -35,9 +35,10 @@ export async function buildApp(
 
   await fastify.register(FastifyAuth);
 
-  await fastify.register(AutoLoad, {
-    dir: path.join(__dirname, "plugins"),
-  });
+  // TODO: Uncomment when we get to plugins implementation
+  // await fastify.register(AutoLoad, {
+  //   dir: path.join(__dirname, "plugins"),
+  // });
 
   if (!opts.testing) {
     await fastify.register(PrintRoutes);
