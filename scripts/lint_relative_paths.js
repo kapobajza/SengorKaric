@@ -32,4 +32,15 @@ const filteredFiles = files
   .filter((path) => minimatch(path, `${argv.path}/**/*.{js,ts,jsx,tsx}`))
   .map((file) => file.replace(`${argv.path}/`, ""));
 
-console.log(filteredFiles.join(" "));
+if (filteredFiles.length === 0) {
+  return process.exit(0);
+}
+
+spawnSync(
+  "pnpm",
+  ["run", "--filter", "api", "lint", ...filteredFiles, "--fix"],
+  {
+    stdio: "inherit",
+    cwd: argv.path,
+  },
+);
