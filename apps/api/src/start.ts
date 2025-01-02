@@ -28,7 +28,7 @@ async function main() {
   });
 
   app.listen(
-    { port: envs.PORT ?? 5050, host: "api.sengor.local.ba" },
+    { port: envs.PORT ?? 5050, host: "0.0.0.0" },
     function (err, address) {
       if (err) {
         app.log.error(err);
