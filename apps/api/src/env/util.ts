@@ -14,6 +14,7 @@ export const envSchema = {
     "GOOGLE_OAUTH_CLIENT_SECRET",
     "GOOGLE_OAUTH_ALLOWED_EMAILS",
     "GOOGLE_OAUTH_STATE_SECRET",
+    "GOOGLE_OAUTH_REDIRECT_URI",
   ],
   properties: {
     SESSION_COOKIE_NAME: {
@@ -41,6 +42,9 @@ export const envSchema = {
       type: "string",
     },
     GOOGLE_OAUTH_STATE_SECRET: {
+      type: "string",
+    },
+    GOOGLE_OAUTH_REDIRECT_URI: {
       type: "string",
     },
   },

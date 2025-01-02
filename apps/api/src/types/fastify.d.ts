@@ -1,8 +1,7 @@
-import { OAuth2Namespace } from "@fastify/oauth2";
-
 import type { EnvRecord } from "@/api/env/util";
 import type { SpeechService } from "@/api/services/speech.service";
 import type { FastifyCustomProp } from "@/api/types/app.types";
+import { AuthService } from "@/api/features/auth/auth.service";
 
 declare module "fastify" {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -10,7 +9,7 @@ declare module "fastify" {
     getEnvs(): EnvRecord;
     [FastifyCustomProp.Service]: {
       speech: SpeechService;
+      auth: AuthService;
     };
-    googleOauth2: OAuth2Namespace;
   }
 }

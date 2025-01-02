@@ -59,11 +59,7 @@ export default function AudioRecord({
   };
 
   return (
-    <button
-      onClick={toggleRecording}
-      style={{ marginBottom: "10px" }}
-      {...rest}
-    >
+    <button onClick={toggleRecording} className="p-2 mb-4" {...rest}>
       {isRecording ? "Stop Recording" : "Start Recording"}
     </button>
   );

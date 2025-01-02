@@ -1,24 +1,29 @@
 import { FastifyInstance } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
-import { jwtDecode } from "jwt-decode";
 import { z } from "zod";
+import jwt from "jsonwebtoken";
 
 import {
   createBadRequestReply,
   createInternalServerErrorReply,
+  createOkReply,
 } from "@/api/error/replies";
 import { okResponseSchema } from "@/api/types/validation.types";
 import { verifySignedState } from "@/api/util/sign";
-
-import { loginGoogleQueryParamsSchema } from "./login.types";
 
 export default function sample(
   fastify: FastifyInstance,
   _opts: unknown,
   done: () => void,
 ) {
+  fastify.get("/google/login", function (request, reply) {
+    const authUriResponse = fastify.service.auth.getGoogleAuthUri();
+    request.session.set("oauthstate", authUriResponse.signedState);
+    return reply.redirect(authUriResponse.authorizationUrl);
+  });
+
   fastify.withTypeProvider<ZodTypeProvider>().get(
-    "/google/callback",
+    "/google/check",
     {
       schema: {
         response: {
@@ -36,31 +41,30 @@ export default function sample(
     async function (request, reply) {
       try {
         const env = fastify.getEnvs();
+        const state = request.session.get("oauthstate");
 
-        const [error, queryState] = verifySignedState({
-          schema: loginGoogleQueryParamsSchema,
-          signedState: request.query.state,
+        const [error] = verifySignedState({
+          state: request.query.state,
           secret: env.GOOGLE_OAUTH_STATE_SECRET,
         });
 
-        if (error) {
-          console.error(error);
-          return createBadRequestReply(reply, "redirect query param missing");
+        if (!state || error || state !== request.query.state) {
+          console.error("Invalid state");
+          return createBadRequestReply(reply, "Invalid state");
         }
 
-        const { token } =
-          await fastify.googleOauth2.getAccessTokenFromAuthorizationCodeFlow(
-            request,
-          );
+        const token = await fastify.service.auth.exchangeGoogleAuthCode(
+          request.query.code,
+        );
 
         if (!token.id_token) {
           console.error("No id_token in token");
           return createBadRequestReply(reply);
         }
 
-        const { email } = jwtDecode<{ email: string | undefined }>(
-          token.id_token,
-        );
+        const { email } = jwt.decode(token.id_token) as {
+          email: string | undefined;
+        };
 
         if (!email) {
           console.error("No email in id_token");
@@ -76,16 +80,21 @@ export default function sample(
           accessToken: token.access_token,
           email,
           expiresIn: token.expires_in,
-          refreshToken: token.refresh_token ?? "",
+          refreshToken: token.refresh_token,
         });
 
-        return reply.redirect(queryState.redirect);
+        return createOkReply(reply);
       } catch (err) {
         console.error(err);
         return createInternalServerErrorReply(reply);
       }
     },
   );
+
+  fastify.post("/logout", async function (request, reply) {
+    request.session.set("user", undefined);
+    return createOkReply(reply);
+  });
 
   done();
 }
