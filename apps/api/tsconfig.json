@@ -4,7 +4,8 @@
     "baseUrl": ".",
     "paths": {
       "@/api/*": ["./src/*"],
-      "@/toolkit/*": ["../../libs/toolkit/src/*"]
+      "@/toolkit/*": ["../../libs/toolkit/src/*"],
+      "@/toolkit": ["../../libs/toolkit/src"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx"]

@@ -10,6 +10,10 @@ export const envSchema = {
     "SESSION_COOKIE_DOMAIN",
     "SESSION_COOKIE_MAX_AGE",
     "SESSION_SECRET",
+    "GOOGLE_OAUTH_CLIENT_ID",
+    "GOOGLE_OAUTH_CLIENT_SECRET",
+    "GOOGLE_OAUTH_ALLOWED_EMAILS",
+    "GOOGLE_OAUTH_STATE_SECRET",
   ],
   properties: {
     SESSION_COOKIE_NAME: {
@@ -25,6 +29,18 @@ export const envSchema = {
       type: "integer",
     },
     SESSION_SECRET: {
+      type: "string",
+    },
+    GOOGLE_OAUTH_CLIENT_ID: {
+      type: "string",
+    },
+    GOOGLE_OAUTH_CLIENT_SECRET: {
+      type: "string",
+    },
+    GOOGLE_OAUTH_ALLOWED_EMAILS: {
+      type: "string",
+    },
+    GOOGLE_OAUTH_STATE_SECRET: {
       type: "string",
     },
   },

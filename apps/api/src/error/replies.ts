@@ -10,32 +10,66 @@ import {
   type ValidationError,
 } from "./types";
 
-export const createErrorReply = (
-  reply: FastifyReply,
-  code: string,
-  statusCode: number,
-) => {
+export const createErrorReply = ({
+  reply,
+  code,
+  statusCode,
+  message,
+}: {
+  reply: FastifyReply;
+  code: string;
+  statusCode: number;
+  message?: string;
+}) => {
   return reply.status(statusCode).send({
     code,
-    message: code,
+    message: message ?? code,
     statusCode,
   });
 };
 
 export const createForbiddenReply = (reply: FastifyReply) => {
-  return createErrorReply(reply, HttpErrorCode.Forbidden, 403);
+  return createErrorReply({
+    reply,
+    code: HttpErrorCode.Forbidden,
+    statusCode: 403,
+  });
 };
 
 export const createUnauthorizedReply = (reply: FastifyReply) => {
-  return createErrorReply(reply, HttpErrorCode.Unathorized, 401);
+  return createErrorReply({
+    reply,
+    code: HttpErrorCode.Unathorized,
+    statusCode: 401,
+  });
 };
 
 export const createInternalServerErrorReply = (reply: FastifyReply) => {
-  return createErrorReply(reply, HttpErrorCode.InternalServerError, 500);
+  return createErrorReply({
+    reply,
+    code: HttpErrorCode.InternalServerError,
+    statusCode: 500,
+  });
 };
 
 export const createNotFoundReply = (reply: FastifyReply) => {
-  return createErrorReply(reply, HttpErrorCode.NotFound, 404);
+  return createErrorReply({
+    reply,
+    code: HttpErrorCode.NotFound,
+    statusCode: 404,
+  });
+};
+
+export const createBadRequestReply = (
+  reply: FastifyReply,
+  message?: string,
+) => {
+  return createErrorReply({
+    reply,
+    code: HttpErrorCode.BadRequest,
+    statusCode: 400,
+    message,
+  });
 };
 
 export const createOkReply = (reply: FastifyReply) => {

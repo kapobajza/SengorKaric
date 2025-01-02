@@ -1,3 +1,5 @@
+import { OAuth2Namespace } from "@fastify/oauth2";
+
 import type { EnvRecord } from "@/api/env/util";
 import type { SpeechService } from "@/api/services/speech.service";
 import type { FastifyCustomProp } from "@/api/types/app.types";
@@ -9,5 +11,6 @@ declare module "fastify" {
     [FastifyCustomProp.Service]: {
       speech: SpeechService;
     };
+    googleOauth2: OAuth2Namespace;
   }
 }
