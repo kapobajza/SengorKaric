@@ -14,6 +14,8 @@ import { Env, ENV_PUBLIC_KEY_PREFIX, publicEnvSchema } from "@/web/env/schema";
 
 import stylesheet from "./app.css?url";
 import type { Route } from "./+types/root";
+import { ApiProvider } from "./providers/ApiProvider";
+import { api } from "./networking/instance";
 
 export const links: Route.LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
@@ -31,6 +33,8 @@ export function loader() {
   });
 }
 
+const apiInstance = api();
+
 export function Layout({ children }: { children: React.ReactNode }) {
   const data = useLoaderData<{ ENV: Env } | undefined>();
   const [queryClient] = useState(() => new QueryClient());
@@ -44,9 +48,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
+        <ApiProvider api={apiInstance}>
+          <QueryClientProvider client={queryClient}>
+            {children}
+          </QueryClientProvider>
+        </ApiProvider>
         <ScrollRestoration />
         <Scripts />
         {data?.ENV ? (

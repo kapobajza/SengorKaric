@@ -11,7 +11,7 @@ import {
 import { okResponseSchema } from "@/api/types/validation.types";
 import { verifySignedState } from "@/api/util/sign";
 
-export default function sample(
+export default function auth(
   fastify: FastifyInstance,
   _opts: unknown,
   done: () => void,

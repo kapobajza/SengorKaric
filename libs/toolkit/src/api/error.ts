@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export const HttpErrorStatus = {
   BadRequest: 400,
   Unauthorized: 401,
@@ -19,8 +21,11 @@ export const HttpErrorCode = {
   Unknown: "unknown",
 } as const;
 
-export type HttpError = {
-  statusCode: number;
-  message: string;
-  code: string;
-};
+export const httpErrorSchema = z.object({
+  statusCode: z.number(),
+  message: z.string(),
+  code: z.string(),
+  error: z.string().optional(),
+});
+
+export type HttpError = z.infer<typeof httpErrorSchema>;

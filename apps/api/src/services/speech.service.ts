@@ -15,6 +15,7 @@ const credentialsPath = path.join(
   getRelativeMonoRepoPath("api"),
   "gc_service_acc.json",
 );
+
 const credentials = JSON.parse(readFileSync(credentialsPath, "utf8")) as Record<
   string,
   string

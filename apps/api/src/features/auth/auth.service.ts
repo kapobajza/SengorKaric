@@ -38,6 +38,7 @@ export default fp((fastify, _opts, done) => {
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
+      withCredentials: true,
     },
     logger: {
       error(message, args) {

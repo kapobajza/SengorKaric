@@ -1,40 +1,48 @@
 import { redirect } from "react-router";
 
-import { getEnv } from "@/web/env/get";
-import { commitSession, getSession } from "@/web/util/session.server";
+import {
+  commitSession,
+  destroySession,
+  getSession,
+  redirectToLogin,
+} from "@/web/util/session.server";
+import { api } from "@/web/networking/instance";
 
 import type { Route } from "./+types/route";
 
 export async function loader({ request }: Route.LoaderArgs) {
   const searchParams = new URL(request.url).searchParams;
-  const env = getEnv();
-  const { headers } = await fetch(
-    `${env.PUBLIC_SK_API_URL}/auth/google/check?${searchParams.toString()}`,
-    {
-      headers: request.headers,
-    },
-  );
 
-  const setCookie = headers.get("Set-Cookie");
+  try {
+    const { headers } = await api().authApi.checkGoogleAuth(
+      searchParams,
+      request.headers.get("Cookie"),
+    );
 
-  if (setCookie) {
-    const session = await getSession();
-    session.set("api-session", setCookie);
+    const setCookie = headers["set-cookie"]?.[0];
 
-    return redirect("/admin/dashboard", {
-      headers: {
-        "Set-Cookie": await commitSession(session, setCookie),
-      },
-    });
+    if (setCookie) {
+      const session = await getSession();
+      session.set("api-session", setCookie);
+
+      return redirect("/admin/dashboard", {
+        headers: {
+          "Set-Cookie": await commitSession(session, setCookie),
+        },
+      });
+    }
+
+    return redirectToLogin();
+  } catch {
+    await destroySession(request);
+    return redirectToLogin();
   }
-
-  return redirect("/admin/login");
 }
 
 export default function AuthGoogleCallback() {
   return (
     <div className="absolute w-full h-screen flex justify-center items-center">
-      Loading...
+      Prijvavljujemo vas...
     </div>
   );
 }

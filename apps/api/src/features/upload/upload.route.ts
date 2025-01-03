@@ -3,15 +3,12 @@ import { Readable } from "stream";
 import type { FastifyInstance } from "fastify";
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import { z } from "zod";
+import { uploadAudioResponseSchema } from "@/toolkit/dto";
 
 import {
   createInternalServerErrorReply,
   createValidationErrorReply,
 } from "@/api/error/replies";
-
-const uploadAudioResponseSchema = z.object({
-  text: z.string(),
-});
 
 const fileRequestSchema = z.object({
   filename: z.string(),
@@ -19,13 +16,13 @@ const fileRequestSchema = z.object({
   mimetype: z.literal("audio/webm"),
 });
 
-export default function sample(
+export default function upload(
   fastify: FastifyInstance,
   _opts: unknown,
   done: () => void,
 ) {
   fastify.withTypeProvider<ZodTypeProvider>().post(
-    "/upload-audio",
+    "/audio",
     {
       schema: {
         response: {

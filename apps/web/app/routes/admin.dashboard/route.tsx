@@ -17,6 +17,7 @@ import {
   verifyLoggedIn,
 } from "@/web/util/session.server";
 import { api } from "@/web/networking/instance";
+import { useApi } from "@/web/providers/ApiProvider";
 
 import AudioRecord from "./components/AudioRecord";
 import type { Route } from "./+types/route";
@@ -59,7 +60,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 }
 
 export async function action({ request }: Route.ActionArgs) {
-  await api().auth.logout();
+  await api().authApi.logout();
   return redirectToLogin({
     headers: {
       "Set-Cookie": await destroySession(request),
@@ -69,26 +70,11 @@ export async function action({ request }: Route.ActionArgs) {
 
 export default function SlateEditor() {
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
+  const { uploadApi } = useApi();
+
   const { mutate, isPending } = useMutation({
     mutationFn: async (data: Blob) => {
-      const formData = new FormData();
-      formData.append("audio", data, "recording.webm");
-
-      const response = await fetch(
-        `${window.ENV.PUBLIC_SK_API_URL}/sample/upload-audio"`,
-        {
-          method: "POST",
-          body: formData,
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to upload audio");
-      }
-
-      const json = (await response.json()) as {
-        text: string;
-      };
+      const { data: uploadRes } = await uploadApi.uploadAudio(data);
       const url = URL.createObjectURL(data);
 
       const audioNode: Node = {
@@ -99,7 +85,7 @@ export default function SlateEditor() {
 
       Transforms.insertNodes(editor, {
         type: "paragraph",
-        children: [{ text: json.text }],
+        children: [{ text: uploadRes.text }],
       });
       Transforms.insertNodes(editor, audioNode);
       Transforms.insertNodes(editor, {
