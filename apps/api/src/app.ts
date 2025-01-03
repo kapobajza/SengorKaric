@@ -4,14 +4,13 @@ import {
   serializerCompiler as zodSerializerCompiler,
   validatorCompiler as zodValidatorCompiler,
 } from "fastify-type-provider-zod";
-import AutoLoad from "@fastify/autoload";
+import AutoLoad, { AutoloadPluginOptions } from "@fastify/autoload";
 import PrintRoutes from "fastify-print-routes";
-import SecureSession from "@fastify/secure-session";
 import { type FastifyInstance } from "fastify";
 import { ZodError } from "zod";
-import FastifyAuth from "@fastify/auth";
 import FastifyMultipart from "@fastify/multipart";
 import FastifyCors from "@fastify/cors";
+import FastifySecureSession from "@fastify/secure-session";
 
 import { createValidationErrorReply } from "@/api/error/replies";
 import type { FastifyAppInstanceOptions } from "@/api/types/app.types";
@@ -33,8 +32,6 @@ export async function buildApp(
   fastify.setValidatorCompiler(zodValidatorCompiler);
   fastify.setSerializerCompiler(zodSerializerCompiler);
 
-  await fastify.register(FastifyAuth);
-
   // TODO: Uncomment when we get to plugins implementation
   // await fastify.register(AutoLoad, {
   //   dir: path.join(__dirname, "plugins"),
@@ -54,25 +51,35 @@ export async function buildApp(
 
   const sessionSecret = Buffer.from(opts.env.SESSION_SECRET, "hex");
 
-  await fastify.register(SecureSession, {
+  await fastify.register(FastifySecureSession, {
     key: sessionSecret,
     cookieName: opts.env.SESSION_COOKIE_NAME,
     cookie: {
       httpOnly: true,
       path: "/",
-      domain: opts.env.SESSION_COOKIE_DOMAIN,
+      domain:
+        opts.appEnv === "local" ? undefined : opts.env.SESSION_COOKIE_DOMAIN,
       secure: opts.appEnv !== "local",
-      sameSite: opts.appEnv === "local" ? "none" : "lax",
+      sameSite: "lax",
       maxAge: opts.env.SESSION_COOKIE_MAX_AGE,
     },
   });
 
-  await fastify.register(AutoLoad, {
-    dir: path.join(__dirname, "services"),
+  const servicesAutoLoadOptions: Omit<AutoloadPluginOptions, "dir"> = {
     matchFilter: (path) => {
       return /\.service\.(t|j)s$/.test(path);
     },
     maxDepth: 2,
+  };
+
+  await fastify.register(AutoLoad, {
+    ...servicesAutoLoadOptions,
+    dir: path.join(__dirname, "services"),
+  });
+
+  await fastify.register(AutoLoad, {
+    ...servicesAutoLoadOptions,
+    dir: path.join(__dirname, "features"),
   });
 
   await fastify.register(AutoLoad, {

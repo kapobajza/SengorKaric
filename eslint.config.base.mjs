@@ -138,6 +138,7 @@ export default tseslint.config(
           "newlines-between": "always",
         },
       ],
+      "@typescript-eslint/no-unnecessary-type-parameters": "off",
     },
     plugins: {
       "unused-imports": unusedImports,

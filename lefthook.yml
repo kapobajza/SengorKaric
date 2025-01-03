@@ -3,14 +3,14 @@ pre-commit:
   commands:
     prettier:
       files: git diff --name-only --staged
-      glob: "*.{js,ts,jsx,tsx,json,svelte}"
+      glob: "*.{js,ts,jsx,tsx,json}"
       run: |
         set -e
         npx prettier --write {files}
         git add {files}
     lint:
       files: git diff --name-only --staged
-      glob: "*.{js,ts,jsx,tsx,svelte}"
+      glob: "*.{js,ts,jsx,tsx}"
       run: |
         set -e
         npx lefthook run lint
@@ -29,23 +29,14 @@ lint:
       files: git diff --name-only --staged
       run: |
         set -e
-        path="apps/api"
-        modified_files=$(node ./scripts/relative_file_paths.js --path $path)
-        cd $path
-        pnpm run --filter api lint ${modified_files} --fix
+        node ./scripts/lint_relative_paths.js --path "apps/api"
     toolkit:
       files: git diff --name-only --staged
       run: |
         set -e
-        path="libs/toolkit"
-        modified_files=$(node ./scripts/relative_file_paths.js --path $path)
-        cd $path
-        pnpm run --filter toolkit lint ${modified_files} --fix
+        node ./scripts/lint_relative_paths.js --path "libs/toolkit"
     web:
       files: git diff --name-only --staged
       run: |
         set -e
-        path="apps/web"
-        modified_files=$(node ./scripts/relative_file_paths.js --path $path)
-        cd $path
-        pnpm run --filter web lint ${modified_files} --fix
+        node ./scripts/lint_relative_paths.js --path "apps/web"

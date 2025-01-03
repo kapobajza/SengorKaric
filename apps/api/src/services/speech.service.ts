@@ -5,7 +5,7 @@ import speech from "@google-cloud/speech";
 import fp from "fastify-plugin";
 import { getRelativeMonoRepoPath } from "@/toolkit/util";
 
-import { FastifyCustomProp } from "@/api/types/app.types";
+import { registerServicePlugin } from "@/api/util/plugin";
 
 export type SpeechService = {
   transcribe: (base64Content: string) => Promise<string>;
@@ -51,10 +51,7 @@ export default fp((fastify, _opts, done) => {
     },
   };
 
-  fastify.decorate(FastifyCustomProp.Service, {
-    ...fastify.service,
-    speech: speechService,
-  });
+  registerServicePlugin(fastify, { speech: speechService });
 
   done();
 });

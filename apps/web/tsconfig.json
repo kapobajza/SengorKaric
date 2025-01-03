@@ -17,7 +17,9 @@
     "rootDirs": [".", "./.react-router/types"],
     "baseUrl": ".",
     "paths": {
-      "@/web/*": ["./app/*"]
+      "@/web/*": ["./app/*"],
+      "@/toolkit/*": ["../../libs/toolkit/src/*"],
+      "@/toolkit": ["../../libs/toolkit/src"]
     }
   }
 }
