@@ -8,3 +8,7 @@ export function getEnv(): Env {
 
   return process.env as unknown as Env;
 }
+
+export function getEnvKey(key: keyof Env) {
+  return getEnv()[key];
+}

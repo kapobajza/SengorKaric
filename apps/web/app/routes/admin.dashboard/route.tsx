@@ -16,7 +16,7 @@ import {
   redirectToLogin,
   verifyLoggedIn,
 } from "@/web/util/session.server";
-import { getEnv } from "@/web/env/get";
+import { api } from "@/web/networking/instance";
 
 import AudioRecord from "./components/AudioRecord";
 import type { Route } from "./+types/route";
@@ -59,9 +59,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 }
 
 export async function action({ request }: Route.ActionArgs) {
-  await fetch(`${getEnv().PUBLIC_SK_API_URL}/auth/logout`, {
-    method: "POST",
-  });
+  await api().auth.logout();
   return redirectToLogin({
     headers: {
       "Set-Cookie": await destroySession(request),
@@ -120,7 +118,7 @@ export default function SlateEditor() {
   ];
 
   return (
-    <div className="container p-4">
+    <div className="container mx-auto p-4">
       {isPending ? <p>Uploading...</p> : null}
       <AudioRecord
         onRecordingStop={(data) => {
@@ -154,7 +152,7 @@ export default function SlateEditor() {
       </Slate>
       <form method="post">
         <button
-          className="bg-blue-500 hover:bg-blue-400 text-white hover:text-blue-900 font-bold py-2 px-4 rounded"
+          className="bg-blue-500 hover:bg-blue-400 text-white hover:text-blue-900 font-bold py-2 px-4 rounded transition-opacity"
           type="submit"
         >
           Log out

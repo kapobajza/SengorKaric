@@ -1,6 +1,7 @@
 import crypto from "crypto";
 
 import fp from "fastify-plugin";
+import { createApiClient } from "@/toolkit/api";
 
 import { registerServicePlugin } from "@/api/util/plugin";
 import { generateSignedState } from "@/api/util/sign";
@@ -31,6 +32,23 @@ export default fp((fastify, _opts, done) => {
     scope: ["openid", "profile", "email"],
   };
 
+  const googleOauthApiClient = createApiClient({
+    baseUrl: GOOGLE_OAUTH2_CONFIG.tokenUri,
+    options: {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    },
+    logger: {
+      error(message, args) {
+        fastify.log.error(message, args);
+      },
+      info(message, args) {
+        fastify.log.info(message, args);
+      },
+    },
+  });
+
   const authService: AuthService = {
     getGoogleAuthUri() {
       const state = generateSignedState(
@@ -56,34 +74,33 @@ export default fp((fastify, _opts, done) => {
       };
     },
     async exchangeGoogleAuthCode(code) {
-      const tokenResponse = await fetch(GOOGLE_OAUTH2_CONFIG.tokenUri, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
-          code,
-          client_id: GOOGLE_OAUTH2_CONFIG.clientId,
-          client_secret: GOOGLE_OAUTH2_CONFIG.clientSecret,
-          redirect_uri: GOOGLE_OAUTH2_CONFIG.redirectUri,
-          grant_type: "authorization_code",
-        }).toString(),
-      });
+      const { data } = await googleOauthApiClient.post<GoogleAuthResponseToken>(
+        {
+          body: {
+            code,
+            client_id: GOOGLE_OAUTH2_CONFIG.clientId,
+            client_secret: GOOGLE_OAUTH2_CONFIG.clientSecret,
+            redirect_uri: GOOGLE_OAUTH2_CONFIG.redirectUri,
+            grant_type: "authorization_code",
+          },
+        },
+      );
 
-      return tokenResponse.json() as Promise<GoogleAuthResponseToken>;
+      return data;
     },
-
     async refreshGoogleAccessToken(refreshToken) {
-      const response = await fetch(GOOGLE_OAUTH2_CONFIG.tokenUri, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
-          refresh_token: refreshToken,
-          client_id: GOOGLE_OAUTH2_CONFIG.clientId,
-          client_secret: GOOGLE_OAUTH2_CONFIG.clientSecret,
-          grant_type: "refresh_token",
-        }).toString(),
-      });
+      const { data } = await googleOauthApiClient.post<GoogleAuthResponseToken>(
+        {
+          body: {
+            refresh_token: refreshToken,
+            client_id: GOOGLE_OAUTH2_CONFIG.clientId,
+            client_secret: GOOGLE_OAUTH2_CONFIG.clientSecret,
+            grant_type: "refresh_token",
+          },
+        },
+      );
 
-      return response.json() as Promise<GoogleAuthResponseToken>;
+      return data;
     },
   };
 

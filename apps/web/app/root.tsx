@@ -10,7 +10,7 @@ import {
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
 
-import { Env, ENV_PUBLIC_KEY_PREFIX, envSchema } from "@/web/env/schema";
+import { Env, ENV_PUBLIC_KEY_PREFIX, publicEnvSchema } from "@/web/env/schema";
 
 import stylesheet from "./app.css?url";
 import type { Route } from "./+types/root";
@@ -25,7 +25,7 @@ export function loader() {
       key.startsWith(ENV_PUBLIC_KEY_PREFIX),
     ),
   );
-  const env = envSchema.parse(publicEnv);
+  const env = publicEnvSchema.parse(publicEnv);
   return Response.json({
     ENV: env,
   });

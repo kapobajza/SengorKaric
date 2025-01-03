@@ -1,14 +1,18 @@
 import { createCookieSessionStorage, redirect, Session } from "react-router";
 import cookie from "cookie";
 
+import { getEnv } from "@/web/env/get";
+
 type SessionData = {
   "api-session": string;
 };
 
+const env = getEnv();
+
 const sessionStorage = createCookieSessionStorage<SessionData>({
   cookie: {
-    name: "sengor_karic_local",
-    secrets: ["s3cret1"],
+    name: env.PRIVATE_SK_SESSION_COOKIE_NAME,
+    secrets: [env.PRIVATE_SK_SESSION_COOKIE_SECRET],
   },
 });
 

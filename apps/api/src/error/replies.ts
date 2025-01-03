@@ -1,14 +1,10 @@
 import type { FastifyReply } from "fastify";
 import type { ZodIssue } from "zod";
+import { HttpErrorCode, HttpErrorStatus } from "@/toolkit/api";
 
 import type { OkResponse } from "@/api/types/validation.types";
 
-import {
-  HttpErrorCode,
-  HttpErrorStatus,
-  type HttpValidationError,
-  type ValidationError,
-} from "./types";
+import { type HttpValidationError, type ValidationError } from "./types";
 
 export const createErrorReply = ({
   reply,
