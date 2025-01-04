@@ -1,3 +1,5 @@
+import type { FastifyAuthFunction } from "@fastify/auth";
+
 import type { EnvRecord } from "@/api/env/util";
 import type { SpeechService } from "@/api/services/speech.service";
 import type { FastifyCustomProp } from "@/api/types/app.types";
@@ -11,5 +13,6 @@ declare module "fastify" {
       speech: SpeechService;
       auth: AuthService;
     };
+    [FastifyCustomProp.VerifyUserSession]: FastifyAuthFunction;
   }
 }

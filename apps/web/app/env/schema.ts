@@ -13,7 +13,6 @@ export const publicEnvSchema = z.object({
 
 export const envSchema = publicEnvSchema.extend({
   PRIVATE_SK_SESSION_COOKIE_NAME: z.string(),
-  PRIVATE_SK_SESSION_COOKIE_SECRET: z.string(),
 } satisfies EnvSchemaRecod);
 
 export type Env = z.infer<typeof envSchema>;

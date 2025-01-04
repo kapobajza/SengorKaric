@@ -11,11 +11,7 @@ import { useMutation } from "@tanstack/react-query";
 import { withHistory } from "slate-history";
 
 import { SlateAudioElement } from "@/web/types/slate";
-import {
-  destroySession,
-  redirectToLogin,
-  verifyLoggedIn,
-} from "@/web/util/session.server";
+import { redirectToLogin, verifyLoggedIn } from "@/web/util/session.server";
 import { api } from "@/web/networking/instance";
 import { useApi } from "@/web/providers/ApiProvider";
 
@@ -55,17 +51,14 @@ const renderElement = (props: RenderElementProps) => {
   }
 };
 
-export async function loader({ request }: Route.LoaderArgs) {
-  await verifyLoggedIn(request);
+export function loader({ request }: Route.LoaderArgs) {
+  verifyLoggedIn(request);
 }
 
-export async function action({ request }: Route.ActionArgs) {
+export async function action() {
   await api().authApi.logout();
-  return redirectToLogin({
-    headers: {
-      "Set-Cookie": await destroySession(request),
-    },
-  });
+
+  return redirectToLogin();
 }
 
 export default function SlateEditor() {

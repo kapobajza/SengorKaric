@@ -5,10 +5,7 @@ import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import { z } from "zod";
 import { uploadAudioResponseSchema } from "@/toolkit/dto";
 
-import {
-  createInternalServerErrorReply,
-  createValidationErrorReply,
-} from "@/api/error/replies";
+import { HttpValidationError } from "@/api/error/throwable";
 
 const fileRequestSchema = z.object({
   filename: z.string(),
@@ -29,38 +26,33 @@ export default function upload(
           200: uploadAudioResponseSchema,
         },
       },
+      preHandler: fastify.verifyUserSession,
     },
     async (request, reply) => {
-      try {
-        const file = await request.file({
-          limits: {
-            fileSize: 1024 * 1024 * 10, // 10 MB
-          },
+      const file = await request.file({
+        limits: {
+          fileSize: 1024 * 1024 * 10, // 10 MB
+        },
+      });
+      const fileValidationRes = fileRequestSchema.safeParse(file);
+
+      if (!fileValidationRes.success) {
+        throw new HttpValidationError({
+          validationErrors: fileValidationRes.error.issues,
         });
-        const fileValidationRes = fileRequestSchema.safeParse(file);
-
-        if (!fileValidationRes.success) {
-          return createValidationErrorReply(
-            reply,
-            fileValidationRes.error.issues,
-          );
-        }
-
-        const fileBase64 = (await file?.toBuffer())?.toString("base64");
-
-        if (!fileBase64) {
-          throw new Error("Failed to convert file to base64");
-        }
-
-        const transcribed = await fastify.service.speech.transcribe(fileBase64);
-
-        return reply.send({
-          text: transcribed,
-        });
-      } catch (err) {
-        console.error("Error with audio file upload", err);
-        return createInternalServerErrorReply(reply);
       }
+
+      const fileBase64 = (await file?.toBuffer())?.toString("base64");
+
+      if (!fileBase64) {
+        throw new Error("Failed to convert file to base64");
+      }
+
+      const transcribed = await fastify.service.speech.transcribe(fileBase64);
+
+      return reply.send({
+        text: transcribed,
+      });
     },
   );
 

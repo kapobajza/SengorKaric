@@ -13,7 +13,7 @@ export const HttpErrorStatus = {
 
 export const HttpErrorCode = {
   ValidationError: "validation_error",
-  Unathorized: "unauthorized",
+  Unauthorized: "unauthorized",
   Forbidden: "forbidden",
   NotFound: "not_found",
   InternalServerError: "internal_server_error",
@@ -28,4 +28,17 @@ export const httpErrorSchema = z.object({
   error: z.string().optional(),
 });
 
-export type HttpError = z.infer<typeof httpErrorSchema>;
+export type HttpErrorSchema = z.infer<typeof httpErrorSchema>;
+
+export class HttpError extends Error implements HttpErrorSchema {
+  statusCode: number;
+  code: string;
+  error: string | undefined;
+
+  constructor({ statusCode, message, code, error }: HttpErrorSchema) {
+    super(message);
+    this.statusCode = statusCode;
+    this.code = code;
+    this.error = error;
+  }
+}

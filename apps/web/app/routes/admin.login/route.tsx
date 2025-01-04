@@ -1,15 +1,13 @@
 import { redirect } from "react-router";
 
-import { getSession } from "@/web/util/session.server";
+import { hasSessionCookie } from "@/web/util/session.server";
 import { isBrowser } from "@/web/util/util";
 import { getEnvKey } from "@/web/env/get";
 
 import type { Route } from "./+types/route";
 
-export async function loader({ request }: Route.LoaderArgs) {
-  const session = await getSession(request);
-
-  if (session.get("api-session")) {
+export function loader({ request }: Route.LoaderArgs) {
+  if (hasSessionCookie(request)) {
     return redirect("/admin/dashboard");
   }
 

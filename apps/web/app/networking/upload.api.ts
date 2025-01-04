@@ -5,6 +5,9 @@ import { createWebApiClient } from "./client";
 export const createUploadApi = () => {
   const uploadApi = createWebApiClient({
     routePrefix: "upload",
+    options: {
+      withCredentials: true,
+    },
   });
 
   return {

@@ -1,6 +1,11 @@
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
 
-import { HttpError, HttpErrorCode, httpErrorSchema } from "./error";
+import {
+  HttpError,
+  HttpErrorCode,
+  HttpErrorSchema,
+  httpErrorSchema,
+} from "./error";
 
 type ApiMethodAdditionalOptions = {
   queryParams?: Record<string, string | number | boolean>;
@@ -110,7 +115,7 @@ export const createApiClient = ({
       return response;
     },
     (error: AxiosError) => {
-      let errorToThrow: HttpError;
+      let errorToThrow: HttpErrorSchema;
 
       try {
         errorToThrow = httpErrorSchema.parse(error.response?.data);
@@ -128,8 +133,8 @@ export const createApiClient = ({
         error.config,
       );
 
-      logger?.error(errorToThrow, error.response?.data);
-      throw errorToThrow;
+      logger?.error(new HttpError(errorToThrow), error.response?.data);
+      throw new HttpError(errorToThrow);
     },
   );
 

@@ -1,53 +1,50 @@
-import { createCookieSessionStorage, redirect, Session } from "react-router";
+import { redirect } from "react-router";
 import cookie from "cookie";
 
 import { getEnv } from "@/web/env/get";
 
-type SessionData = {
-  "api-session": string;
-};
-
 const env = getEnv();
 
-const sessionStorage = createCookieSessionStorage<SessionData>({
-  cookie: {
-    name: env.PRIVATE_SK_SESSION_COOKIE_NAME,
-    secrets: [env.PRIVATE_SK_SESSION_COOKIE_SECRET],
-  },
-});
+export function hasSessionCookie(request: Request) {
+  const setCookie = request.headers.get("Cookie");
 
-export function getSession(request?: Request) {
-  return sessionStorage.getSession(request?.headers.get("Cookie"));
-}
+  if (!setCookie) {
+    return false;
+  }
 
-export function commitSession(session: Session, setCookie: string) {
   const parsedCookie = cookie.parse(setCookie);
 
-  return sessionStorage.commitSession(session, {
-    maxAge: parseInt(parsedCookie["Max-Age"] ?? "", 10),
-    path: parsedCookie["Path"],
-    sameSite: (parsedCookie["SameSite"] as "lax" | undefined) ?? "lax",
-    secure: parsedCookie["Secure"] === "true",
+  if (!parsedCookie[env.PRIVATE_SK_SESSION_COOKIE_NAME]) {
+    return false;
+  }
+
+  return true;
+}
+
+export function redirectToLogin() {
+  const clearSessionCookie = cookie.serialize(
+    env.PRIVATE_SK_SESSION_COOKIE_NAME,
+    "",
+    {
+      maxAge: 0,
+      expires: new Date(0),
+      path: "/",
+    },
+  );
+
+  return redirect("/admin/login", {
+    headers: {
+      "Set-Cookie": clearSessionCookie,
+    },
   });
 }
 
-export function redirectToLogin(init?: number | ResponseInit) {
-  return redirect("/admin/login", init);
-}
-
-export async function verifyLoggedIn(request: Request) {
+export function verifyLoggedIn(request: Request) {
   try {
-    const session = await getSession(request);
-
-    if (!session.get("api-session")) {
+    if (!hasSessionCookie(request)) {
       throw redirectToLogin();
     }
   } catch {
     throw redirectToLogin();
   }
-}
-
-export async function destroySession(request: Request) {
-  const session = await getSession(request);
-  return sessionStorage.destroySession(session);
 }

@@ -9,11 +9,15 @@ import PrintRoutes from "fastify-print-routes";
 import { type FastifyInstance } from "fastify";
 import { ZodError } from "zod";
 import FastifyMultipart from "@fastify/multipart";
-import FastifyCors from "@fastify/cors";
+import FastifyAuth from "@fastify/auth";
 import FastifySecureSession from "@fastify/secure-session";
+import { HttpError } from "@/toolkit/api";
 
-import { createValidationErrorReply } from "@/api/error/replies";
 import type { FastifyAppInstanceOptions } from "@/api/types/app.types";
+import {
+  HttpInternalServerError,
+  HttpValidationError,
+} from "@/api/error/throwable";
 
 export async function buildApp(
   fastify: FastifyInstance,
@@ -21,10 +25,18 @@ export async function buildApp(
 ) {
   fastify.setErrorHandler((error, _request, reply) => {
     if (error instanceof ZodError) {
-      return createValidationErrorReply(reply, error.issues);
+      const responseError = new HttpValidationError({
+        validationErrors: error.issues,
+      });
+
+      return reply.status(responseError.statusCode).send(responseError);
     }
 
-    return reply.status(500).send(error);
+    if (error instanceof HttpError) {
+      return reply.status(error.statusCode).send(error);
+    }
+
+    return reply.status(500).send(new HttpInternalServerError());
   });
 
   await fastify.register(FastifyMultipart);
@@ -32,16 +44,14 @@ export async function buildApp(
   fastify.setValidatorCompiler(zodValidatorCompiler);
   fastify.setSerializerCompiler(zodSerializerCompiler);
 
-  // TODO: Uncomment when we get to plugins implementation
-  // await fastify.register(AutoLoad, {
-  //   dir: path.join(__dirname, "plugins"),
-  // });
+  await fastify.register(FastifyAuth);
 
   if (!opts.testing) {
     await fastify.register(PrintRoutes);
   }
 
   if (opts.appEnv === "local") {
+    const FastifyCors = await import("@fastify/cors");
     await fastify.register(FastifyCors, {
       origin: true,
       allowedHeaders: ["Origin", "Content-Type"],
@@ -53,6 +63,7 @@ export async function buildApp(
 
   await fastify.register(FastifySecureSession, {
     key: sessionSecret,
+    salt: opts.env.SESSION_SECRET_SALT,
     cookieName: opts.env.SESSION_COOKIE_NAME,
     cookie: {
       httpOnly: true,
@@ -80,6 +91,10 @@ export async function buildApp(
   await fastify.register(AutoLoad, {
     ...servicesAutoLoadOptions,
     dir: path.join(__dirname, "features"),
+  });
+
+  await fastify.register(AutoLoad, {
+    dir: path.join(__dirname, "plugins"),
   });
 
   await fastify.register(AutoLoad, {

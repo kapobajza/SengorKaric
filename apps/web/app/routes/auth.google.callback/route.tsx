@@ -1,11 +1,6 @@
 import { redirect } from "react-router";
 
-import {
-  commitSession,
-  destroySession,
-  getSession,
-  redirectToLogin,
-} from "@/web/util/session.server";
+import { redirectToLogin } from "@/web/util/session.server";
 import { api } from "@/web/networking/instance";
 
 import type { Route } from "./+types/route";
@@ -21,20 +16,16 @@ export async function loader({ request }: Route.LoaderArgs) {
 
     const setCookie = headers["set-cookie"]?.[0];
 
-    if (setCookie) {
-      const session = await getSession();
-      session.set("api-session", setCookie);
-
-      return redirect("/admin/dashboard", {
-        headers: {
-          "Set-Cookie": await commitSession(session, setCookie),
-        },
-      });
+    if (!setCookie) {
+      throw new Error("No cookie found");
     }
 
-    return redirectToLogin();
+    return redirect("/admin/dashboard", {
+      headers: {
+        "Set-Cookie": setCookie,
+      },
+    });
   } catch {
-    await destroySession(request);
     return redirectToLogin();
   }
 }
@@ -42,7 +33,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 export default function AuthGoogleCallback() {
   return (
     <div className="absolute w-full h-screen flex justify-center items-center">
-      Prijvavljujemo vas...
+      Prijava je u toku...
     </div>
   );
 }

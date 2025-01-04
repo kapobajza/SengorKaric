@@ -10,6 +10,7 @@ export const envSchema = {
     "SESSION_COOKIE_DOMAIN",
     "SESSION_COOKIE_MAX_AGE",
     "SESSION_SECRET",
+    "SESSION_SECRET_SALT",
     "GOOGLE_OAUTH_CLIENT_ID",
     "GOOGLE_OAUTH_CLIENT_SECRET",
     "GOOGLE_OAUTH_ALLOWED_EMAILS",
@@ -30,6 +31,9 @@ export const envSchema = {
       type: "integer",
     },
     SESSION_SECRET: {
+      type: "string",
+    },
+    SESSION_SECRET_SALT: {
       type: "string",
     },
     GOOGLE_OAUTH_CLIENT_ID: {

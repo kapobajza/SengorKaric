@@ -10,4 +10,5 @@ export type FastifyAppInstanceOptions = {
 
 export const FastifyCustomProp = {
   Service: "service",
+  VerifyUserSession: "verifyUserSession",
 } as const;
