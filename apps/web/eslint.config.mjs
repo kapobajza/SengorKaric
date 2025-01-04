@@ -8,5 +8,10 @@ export default [
   generateTSLanguageOptions(),
   {
     ignores: [".react-router"],
+    files: ["**/*.{ts,tsx}"],
+    rules: {
+      "@typescript-eslint/consistent-type-imports": "error",
+      "import/consistent-type-specifier-style": ["error", "prefer-top-level"],
+    },
   },
 ];

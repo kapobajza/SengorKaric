@@ -1,4 +1,4 @@
-import { Env } from "@/web/env/schema";
+import type { Env } from "@/web/env/schema";
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions

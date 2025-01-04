@@ -1,19 +1,18 @@
-import { HTMLAttributes, ReactNode, useMemo } from "react";
-import { createEditor, Descendant, Node, Transforms } from "slate";
-import {
-  Editable,
-  ReactEditor,
-  RenderElementProps,
-  Slate,
-  withReact,
-} from "slate-react";
+import type { HTMLAttributes, ReactNode } from "react";
+import { useMemo } from "react";
+import type { Descendant, Node } from "slate";
+import { createEditor, Transforms } from "slate";
+import type { RenderElementProps } from "slate-react";
+import { Editable, ReactEditor, Slate, withReact } from "slate-react";
 import { useMutation } from "@tanstack/react-query";
 import { withHistory } from "slate-history";
 
-import { SlateAudioElement } from "@/web/types/slate";
-import { redirectToLogin, verifyLoggedIn } from "@/web/util/session.server";
+import type { SlateAudioElement } from "@/web/types/slate";
+import { redirectToLogin, verifyLoggedIn } from "@/web/lib/session.server";
 import { api } from "@/web/networking/instance";
-import { useApi } from "@/web/providers/ApiProvider";
+import { useApi } from "@/web/providers/api-provider";
+import { Button } from "@/web/components/ui/button";
+import { Textarea } from "@/web/components/ui/textarea";
 
 import AudioRecord from "./components/AudioRecord";
 import type { Route } from "./+types/route";
@@ -106,36 +105,32 @@ export default function SlateEditor() {
         disabled={isPending}
       />
       <Slate editor={editor} initialValue={initialValue}>
-        <Editable
-          renderElement={renderElement}
-          placeholder="Enter some text..."
-          className="p-4 mb-6 border border-gray-300 rounded-md"
-          renderPlaceholder={({ attributes, children }) => (
-            <div
-              {...attributes}
-              style={{
-                fontStyle: "italic",
-                color: "gray",
-                position: "absolute",
-                pointerEvents: "none",
-                userSelect: "none",
-              }}
-              onClick={() => {
-                ReactEditor.focus(editor);
-              }}
-            >
-              {children}
-            </div>
-          )}
-        />
+        <Textarea className="mb-6 block min-h-0" asChild>
+          <Editable
+            renderElement={renderElement}
+            placeholder="Enter some text..."
+            renderPlaceholder={({ attributes, children }) => (
+              <div
+                {...attributes}
+                style={{
+                  fontStyle: "italic",
+                  color: "gray",
+                  position: "absolute",
+                  pointerEvents: "none",
+                  userSelect: "none",
+                }}
+                onClick={() => {
+                  ReactEditor.focus(editor);
+                }}
+              >
+                {children}
+              </div>
+            )}
+          />
+        </Textarea>
       </Slate>
       <form method="post">
-        <button
-          className="bg-blue-500 hover:bg-blue-400 text-white hover:text-blue-900 font-bold py-2 px-4 rounded transition-opacity"
-          type="submit"
-        >
-          Log out
-        </button>
+        <Button type="submit">Log out</Button>
       </form>
     </div>
   );
