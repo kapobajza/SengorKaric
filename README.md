@@ -19,7 +19,7 @@ In order to run this app you will need the following:
 
 For the API you will need a GCloud project, enable the Speech-to-Text API and then generate a service account with admin permissions and download the JSON file. You should name the file **gc_service_acc.json** and place it inside of the __apps/api__ folder.
 
-You will also need to create a `.env.local` file. You have a [`.env.sample`](apps/api/.env.sample) file inside of the __apps/api__ folder you can use as a reference. Or you can simply c/p the contents of the `.env.sample` file into the `.env.local` file:
+You will also need to create a `.env.local` file. You have a [`.env.sample`](apps/api/.env.sample) file inside of the __apps/api__ folder you can use as a reference. Or you can simply c/p the contents of the `.env.sample` file into the `.env.local` file (but you will need to generate the [`SESSION_SECRET` string manully](apps/api/.env.sample#L4)):
 
 ```sh
 cp apps/api/.env.sample apps/api/.env.local
