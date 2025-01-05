@@ -5,7 +5,7 @@ import speech from "@google-cloud/speech";
 import fp from "fastify-plugin";
 import { getRelativeMonoRepoPath } from "@/toolkit/util";
 
-import { FastifyCustomProp } from "@/api/types/app.types";
+import { registerServicePlugin } from "@/api/util/plugin";
 
 export type SpeechService = {
   transcribe: (base64Content: string) => Promise<string>;
@@ -15,6 +15,7 @@ const credentialsPath = path.join(
   getRelativeMonoRepoPath("api"),
   "gc_service_acc.json",
 );
+
 const credentials = JSON.parse(readFileSync(credentialsPath, "utf8")) as Record<
   string,
   string
@@ -51,10 +52,7 @@ export default fp((fastify, _opts, done) => {
     },
   };
 
-  fastify.decorate(FastifyCustomProp.Service, {
-    ...fastify.service,
-    speech: speechService,
-  });
+  registerServicePlugin(fastify, { speech: speechService });
 
   done();
 });

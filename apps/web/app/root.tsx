@@ -5,28 +5,38 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
 
+import { Env, ENV_PUBLIC_KEY_PREFIX, publicEnvSchema } from "@/web/env/schema";
+
 import stylesheet from "./app.css?url";
 import type { Route } from "./+types/root";
+import { ApiProvider } from "./providers/ApiProvider";
+import { api } from "./networking/instance";
 
 export const links: Route.LinksFunction = () => [
-  { rel: "preconnect", href: "https://fonts.googleapis.com" },
-  {
-    rel: "preconnect",
-    href: "https://fonts.gstatic.com",
-    crossOrigin: "anonymous",
-  },
-  {
-    rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
-  },
   { rel: "stylesheet", href: stylesheet },
 ];
 
+export function loader() {
+  const publicEnv = Object.fromEntries(
+    Object.entries(process.env).filter(([key]) =>
+      key.startsWith(ENV_PUBLIC_KEY_PREFIX),
+    ),
+  );
+  const env = publicEnvSchema.parse(publicEnv);
+  return Response.json({
+    ENV: env,
+  });
+}
+
+const apiInstance = api();
+
 export function Layout({ children }: { children: React.ReactNode }) {
+  const data = useLoaderData<{ ENV: Env } | undefined>();
   const [queryClient] = useState(() => new QueryClient());
 
   return (
@@ -38,11 +48,20 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
+        <ApiProvider api={apiInstance}>
+          <QueryClientProvider client={queryClient}>
+            {children}
+          </QueryClientProvider>
+        </ApiProvider>
         <ScrollRestoration />
         <Scripts />
+        {data?.ENV ? (
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `window.ENV = ${JSON.stringify(data.ENV)}`,
+            }}
+          />
+        ) : null}
       </body>
     </html>
   );
