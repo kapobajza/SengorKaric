@@ -8,13 +8,14 @@ import { useMutation } from "@tanstack/react-query";
 import { withHistory } from "slate-history";
 
 import type { SlateAudioElement } from "@/web/types/slate";
-import { redirectToLogin, verifyLoggedIn } from "@/web/lib/session.server";
-import { api } from "@/web/networking/instance";
+import { verifyLoggedIn } from "@/web/lib/session.server";
 import { useApi } from "@/web/providers/api-provider";
-import { Button } from "@/web/components/ui/button";
 import { Textarea } from "@/web/components/ui/textarea";
+import { dehydratedQueryResponse } from "@/web/query/util";
+import { meQueryOptions } from "@/web/query/user.query";
+import { RichTextToolbar } from "@/web/admin/components/rich-text/rich-text-toolbar";
 
-import AudioRecord from "./components/AudioRecord";
+import AudioRecord from "./components/audio-record";
 import type { Route } from "./+types/route";
 
 const AudioElement = ({
@@ -50,17 +51,12 @@ const renderElement = (props: RenderElementProps) => {
   }
 };
 
-export function loader({ request }: Route.LoaderArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
   verifyLoggedIn(request);
+  return dehydratedQueryResponse(meQueryOptions);
 }
 
-export async function action() {
-  await api().authApi.logout();
-
-  return redirectToLogin();
-}
-
-export default function SlateEditor() {
+export default function Admin() {
   const editor = useMemo(() => withHistory(withReact(createEditor())), []);
   const { uploadApi } = useApi();
 
@@ -96,7 +92,7 @@ export default function SlateEditor() {
   ];
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="p-4 lg:max-w-[800px]">
       {isPending ? <p>Uploading...</p> : null}
       <AudioRecord
         onRecordingStop={(data) => {
@@ -105,20 +101,17 @@ export default function SlateEditor() {
         disabled={isPending}
       />
       <Slate editor={editor} initialValue={initialValue}>
-        <Textarea className="mb-6 block min-h-0" asChild>
+        <RichTextToolbar className="mb-4" />
+        <Textarea className="mb-6 block min-h-52" asChild>
           <Editable
+            disableDefaultStyles
             renderElement={renderElement}
             placeholder="Enter some text..."
             renderPlaceholder={({ attributes, children }) => (
               <div
                 {...attributes}
-                style={{
-                  fontStyle: "italic",
-                  color: "gray",
-                  position: "absolute",
-                  pointerEvents: "none",
-                  userSelect: "none",
-                }}
+                style={{}}
+                className="text-md pointer-events-none absolute italic text-gray-400 [user-select:none]"
                 onClick={() => {
                   ReactEditor.focus(editor);
                 }}
@@ -129,9 +122,6 @@ export default function SlateEditor() {
           />
         </Textarea>
       </Slate>
-      <form method="post">
-        <Button type="submit">Log out</Button>
-      </form>
     </div>
   );
 }

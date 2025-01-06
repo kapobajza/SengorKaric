@@ -1,12 +1,14 @@
 import { FastifyInstance } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
-import { z } from "zod";
 import jwt from "jsonwebtoken";
 
 import { okResponseSchema } from "@/api/types/validation.types";
-import { verifySignedState } from "@/api/util/sign";
 import { HttpBadRequestError } from "@/api/error/throwable";
 import { createOkReply } from "@/api/util/replies";
+import { users } from "@/api/db/schema";
+import { generateUDID } from "@/api/util/secure";
+
+import { googleCheckQuerySchema } from "./auth.types";
 
 export default function auth(
   fastify: FastifyInstance,
@@ -26,25 +28,14 @@ export default function auth(
         response: {
           200: okResponseSchema,
         },
-        querystring: z.object({
-          state: z.string(),
-          code: z.string(),
-          scope: z.string(),
-          authuser: z.string(),
-          prompt: z.string(),
-        }),
+        querystring: googleCheckQuerySchema,
       },
     },
     async function (request, reply) {
       const env = fastify.getEnvs();
       const state = request.session.get("oauthstate");
 
-      const [error] = verifySignedState({
-        state: request.query.state,
-        secret: env.GOOGLE_OAUTH_STATE_SECRET,
-      });
-
-      if (!state || error || state !== request.query.state) {
+      if (!fastify.isCsrfProtected(state, request.query.state)) {
         throw new HttpBadRequestError({ message: "Invalid state" });
       }
 
@@ -56,15 +47,43 @@ export default function auth(
         throw new HttpBadRequestError();
       }
 
-      const { email } = jwt.decode(token.id_token) as {
+      const payload = jwt.decode(token.id_token) as {
         email: string | undefined;
+        name: string | undefined;
+        picture: string | undefined;
       };
+      const { email, name, picture } = payload;
 
       if (!email) {
         throw new HttpBadRequestError();
       }
 
-      if (!env.GOOGLE_OAUTH_ALLOWED_EMAILS.includes(email)) {
+      const allowedEmails = env.GOOGLE_OAUTH_ALLOWED_EMAILS.split(",").map(
+        (e) => e.trim().toLowerCase(),
+      );
+
+      if (!allowedEmails.includes(email.toLowerCase())) {
+        throw new HttpBadRequestError();
+      }
+
+      const insertedUsers = await fastify.db
+        .insert(users)
+        .values({
+          email,
+          name: name ?? "Unknown",
+          avatar: picture,
+          id: generateUDID(),
+        })
+        .onConflictDoUpdate({
+          target: users.email,
+          set: {
+            email,
+          },
+        })
+        .returning({ id: users.id });
+      const user = insertedUsers[0];
+
+      if (!user) {
         throw new HttpBadRequestError();
       }
 
@@ -73,6 +92,7 @@ export default function auth(
         email,
         expiresIn: token.expires_in,
         refreshToken: token.refresh_token,
+        id: user.id,
       });
 
       return createOkReply(reply);

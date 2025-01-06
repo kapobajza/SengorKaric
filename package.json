@@ -36,6 +36,7 @@
     "overrides": {
       "@eslint/js": "9.17.0",
       "@types/yargs": "15.0.19",
+      "dotenv": "16.4.7",
       "eslint-config-prettier": "9.1.0",
       "eslint-plugin-import": "2.31.0",
       "eslint-plugin-jsx-a11y": "6.10.2",

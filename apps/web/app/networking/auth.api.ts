@@ -18,10 +18,8 @@ export const createAuthApi = () => {
     ) => {
       return authApi.get({
         route: `google/check?${searchParams.toString()}`,
-        options: {
-          headers: {
-            Cookie: sessionCookie,
-          },
+        headers: {
+          Cookie: sessionCookie,
         },
       });
     },

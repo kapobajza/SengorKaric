@@ -30,8 +30,8 @@ export type CreateInstanceOptions = Omit<CreateApiOptions, "routePrefix">;
 
 type FetchMethodOptions = {
   route?: string;
-  options?: Omit<AxiosRequestConfig, "method">;
-};
+} & Omit<AxiosRequestConfig, "method" | "data"> &
+  ApiMethodAdditionalOptions;
 
 type FetchMethodMutationOptions<TBody> = FetchMethodOptions & {
   body?: TBody;
@@ -138,16 +138,21 @@ export const createApiClient = ({
     },
   );
 
-  const doFetch = async <TResponse = unknown>(
-    route: string | undefined,
-    options?: ClientRequestOptions,
+  const doFetch = async <TResponse = unknown, TBody = unknown>(
+    method: string,
+    options:
+      | (FetchMethodMutationOptions<TBody> & {
+          route?: string;
+        })
+      | undefined,
   ) => {
-    const { method } = options ?? apiClientOptions ?? {};
+    const { route, body } = options ?? {};
     const requestUrl = constructRoute(route, options?.queryParams);
 
     return axiosInstance<TResponse>({
       method,
       url: requestUrl,
+      data: body,
       ...apiClientOptions,
       ...options,
     });
@@ -155,34 +160,20 @@ export const createApiClient = ({
 
   return {
     get: async <TResponse = unknown>(config?: FetchMethodOptions) => {
-      return doFetch<TResponse>(config?.route, {
-        ...config?.options,
-        method: "GET",
-      });
+      return doFetch<TResponse>("GET", config);
     },
     post: async <TResponse = unknown, TBody = unknown>(
       config?: FetchMethodMutationOptions<TBody>,
     ) => {
-      return doFetch<TResponse>(config?.route, {
-        ...config?.options,
-        data: config?.body,
-        method: "POST",
-      });
+      return doFetch<TResponse>("POST", config);
     },
     put: async <TResponse = unknown, TBody = unknown>(
       config?: FetchMethodMutationOptions<TBody>,
     ) => {
-      return doFetch<TResponse>(config?.route, {
-        ...config?.options,
-        data: config?.body,
-        method: "PUT",
-      });
+      return doFetch<TResponse>("PUT", config);
     },
     delete: async <TResponse = unknown>(config?: FetchMethodOptions) => {
-      return doFetch<TResponse>(config?.route, {
-        ...config?.options,
-        method: "DELETE",
-      });
+      return doFetch<TResponse>("DELETE", config);
     },
   };
 };

@@ -22,11 +22,15 @@ const createLogger = (): ApiClientLogger | undefined => {
 };
 
 export const createWebApiClient = (
-  options: Omit<CreateApiOptions, "logger" | "baseUrl">,
+  config: Omit<CreateApiOptions, "logger" | "baseUrl">,
 ) => {
   return createApiClient({
-    ...options,
+    ...config,
     baseUrl: getEnvKey("PUBLIC_SK_API_URL"),
     logger: createLogger(),
+    options: {
+      withCredentials: true,
+      ...config.options,
+    },
   });
 };
