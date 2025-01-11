@@ -1,4 +1,4 @@
-import { UploadAudioResponse } from "@/toolkit/dto";
+import type { UploadAudioResponse } from "@/toolkit/dto";
 
 import { createWebApiClient } from "./client";
 

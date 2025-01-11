@@ -1,11 +1,8 @@
-import {
-  ApiClientLogger,
-  createApiClient,
-  CreateApiOptions,
-} from "@/toolkit/api";
+import type { ApiClientLogger, CreateApiOptions } from "@/toolkit/api";
+import { createApiClient } from "@/toolkit/api";
 
-import { isBrowser } from "../util/util";
-import { getEnvKey } from "../env/get";
+import { isBrowser } from "@/web/lib/utils";
+import { getEnvKey } from "@/web/env/get";
 
 const createLogger = (): ApiClientLogger | undefined => {
   if (isBrowser()) {

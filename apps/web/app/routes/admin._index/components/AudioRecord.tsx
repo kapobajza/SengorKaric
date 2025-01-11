@@ -1,9 +1,5 @@
-import {
-  ButtonHTMLAttributes,
-  DetailedHTMLProps,
-  useRef,
-  useState,
-} from "react";
+import type { ButtonHTMLAttributes, DetailedHTMLProps } from "react";
+import { useRef, useState } from "react";
 
 export default function AudioRecord({
   onRecordingStop,
@@ -59,7 +55,7 @@ export default function AudioRecord({
   };
 
   return (
-    <button onClick={toggleRecording} className="p-2 mb-4" {...rest}>
+    <button onClick={toggleRecording} className="mb-4 p-2" {...rest}>
       {isRecording ? "Stop Recording" : "Start Recording"}
     </button>
   );

@@ -16,6 +16,7 @@
     "jsx": "react-jsx",
     "rootDirs": [".", "./.react-router/types"],
     "baseUrl": ".",
+    "verbatimModuleSyntax": true,
     "paths": {
       "@/web/*": ["./app/*"],
       "@/toolkit/*": ["../../libs/toolkit/src/*"],

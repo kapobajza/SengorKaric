@@ -1,6 +1,7 @@
-import { createContext, ReactNode, useContext } from "react";
+import type { ReactNode } from "react";
+import { createContext, useContext } from "react";
 
-import { ApiInstance } from "@/web/networking/instance";
+import type { ApiInstance } from "@/web/networking/instance";
 
 const ApiContext = createContext<ApiInstance | null>(null);
 

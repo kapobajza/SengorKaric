@@ -1,6 +1,6 @@
 import { redirect } from "react-router";
 
-import { redirectToLogin } from "@/web/util/session.server";
+import { redirectToLogin } from "@/web/lib/session.server";
 import { api } from "@/web/networking/instance";
 
 import type { Route } from "./+types/route";
@@ -20,7 +20,7 @@ export async function loader({ request }: Route.LoaderArgs) {
       throw new Error("No cookie found");
     }
 
-    return redirect("/admin/dashboard", {
+    return redirect("/admin", {
       headers: {
         "Set-Cookie": setCookie,
       },
@@ -32,7 +32,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 
 export default function AuthGoogleCallback() {
   return (
-    <div className="absolute w-full h-screen flex justify-center items-center">
+    <div className="absolute flex h-screen w-full items-center justify-center">
       Prijava je u toku...
     </div>
   );

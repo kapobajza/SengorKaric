@@ -1,9 +1,9 @@
-import { isBrowser } from "@/web/util/util";
-import { Env } from "@/web/env/schema";
+import { isBrowser } from "@/web/lib/utils";
+import type { Env } from "@/web/env/schema";
 
 export function getEnv(): Env {
   if (isBrowser()) {
-    return (window as Window).ENV;
+    return window.ENV;
   }
 
   return process.env as unknown as Env;
