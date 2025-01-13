@@ -7,42 +7,65 @@ import {
   ScrollRestoration,
   useLoaderData,
 } from "react-router";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  HydrationBoundary,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 import { useState } from "react";
+import type { ReactNode } from "react";
 
-import type { Env } from "@/web/env/schema";
 import { ENV_PUBLIC_KEY_PREFIX, publicEnvSchema } from "@/web/env/schema";
 
 import stylesheet from "./app.css?url";
 import type { Route } from "./+types/root";
 import { ApiProvider } from "./providers/api-provider";
 import { api } from "./networking/instance";
+import { ClientHintCheck } from "./components/client-hint-check";
+import { useDehydratedState } from "./hooks/use-dehydrated-state";
+import type { RootLoaderData } from "./types/loader";
+import { ThemeAppearance } from "./theme/types";
+import { getBrowserCookieThemeRaw, getHints } from "./lib/utils";
+import { getThemeCookie } from "./lib/cookie.server";
 
 export const links: Route.LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
 ];
 
-export function loader() {
+export function loader({ request }: Route.LoaderArgs) {
   const publicEnv = Object.fromEntries(
     Object.entries(process.env).filter(([key]) =>
       key.startsWith(ENV_PUBLIC_KEY_PREFIX),
     ),
   );
   const env = publicEnvSchema.parse(publicEnv);
+  const theme = getThemeCookie(request);
+
   return Response.json({
-    ENV: env,
-  });
+    env,
+    theme,
+    requestInfo: {
+      hints: getHints(request),
+    },
+  } satisfies RootLoaderData);
 }
 
 const apiInstance = api();
 
-export function Layout({ children }: { children: React.ReactNode }) {
-  const data = useLoaderData<{ ENV: Env } | undefined>();
+function Document({
+  children,
+  env,
+  head,
+  theme,
+}: { children: ReactNode; head?: ReactNode } & Partial<RootLoaderData>) {
   const [queryClient] = useState(() => new QueryClient());
+  const dehydratedState = useDehydratedState();
 
   return (
-    <html lang="en">
+    <html lang="en" className={theme}>
       <head>
+        <ClientHintCheck />
+        {head}
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
@@ -51,15 +74,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <body>
         <ApiProvider api={apiInstance}>
           <QueryClientProvider client={queryClient}>
-            {children}
+            <HydrationBoundary state={dehydratedState}>
+              {children}
+            </HydrationBoundary>
           </QueryClientProvider>
         </ApiProvider>
         <ScrollRestoration />
         <Scripts />
-        {data?.ENV ? (
+        {env ? (
           <script
             dangerouslySetInnerHTML={{
-              __html: `window.ENV = ${JSON.stringify(data.ENV)}`,
+              __html: `window.ENV = ${JSON.stringify(env)}`,
             }}
           />
         ) : null}
@@ -69,7 +94,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  const data = useLoaderData<RootLoaderData | undefined>();
+
+  return (
+    <Document
+      env={data?.env}
+      theme={data?.theme ?? data?.requestInfo.hints.theme}
+    >
+      <Outlet />
+    </Document>
+  );
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
@@ -89,14 +123,33 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className="container mx-auto p-4 pt-16">
-      <h1>{message}</h1>
-      <p>{details}</p>
-      {stack ? (
-        <pre className="w-full overflow-x-auto p-4">
-          <code>{stack}</code>
-        </pre>
-      ) : null}
-    </main>
+    <Document
+      head={
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+          const getBrowserCookieTheme = ${getBrowserCookieThemeRaw.toString()};
+          let cookieTheme = getBrowserCookieTheme();
+
+          if (cookieTheme) {
+            document.documentElement.classList.add(cookieTheme === '${ThemeAppearance.Dark}' ? '${ThemeAppearance.Dark}' : '${ThemeAppearance.Light}');
+          } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('${ThemeAppearance.Dark}');
+          }
+        `,
+          }}
+        />
+      }
+    >
+      <main className="container mx-auto p-4 pt-16">
+        <h1>{message}</h1>
+        <p>{details}</p>
+        {stack ? (
+          <pre className="w-full overflow-x-auto p-4">
+            <code>{stack}</code>
+          </pre>
+        ) : null}
+      </main>
+    </Document>
   );
 }

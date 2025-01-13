@@ -28,10 +28,7 @@ export const generateTSLanguageOptions = () => ({
 export default tseslint.config(
   {
     files: ["**/*.{ts,tsx}"],
-    extends: [
-      tseslint.configs.strictTypeChecked,
-      importPlugin.flatConfigs.recommended,
-    ],
+    extends: [tseslint.configs.strictTypeChecked],
     rules: {
       "@typescript-eslint/consistent-type-definitions": ["error", "type"],
       "@typescript-eslint/restrict-template-expressions": "off",
@@ -88,6 +85,7 @@ export default tseslint.config(
   eslintConfigPrettier,
   {
     files: ["**/*.{ts,tsx,js,jsx}"],
+    extends: [importPlugin.flatConfigs.recommended],
     rules: {
       "no-unused-vars": "off", // or "@typescript-eslint/no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": "off",
