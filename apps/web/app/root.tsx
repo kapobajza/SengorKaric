@@ -27,6 +27,7 @@ import type { RootLoaderData } from "./types/loader";
 import { ThemeAppearance } from "./theme/types";
 import { getBrowserCookieThemeRaw, getHints } from "./lib/utils";
 import { getThemeCookie } from "./lib/cookie.server";
+import { GlobalProgressIndicator } from "./components/global-progress-indicator";
 
 export const links: Route.LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
@@ -57,7 +58,9 @@ function Document({
   env,
   head,
   theme,
-}: { children: ReactNode; head?: ReactNode } & Partial<RootLoaderData>) {
+}: { children: ReactNode; head?: ReactNode } & Partial<
+  Omit<RootLoaderData, "requestInfo">
+>) {
   const [queryClient] = useState(() => new QueryClient());
   const dehydratedState = useDehydratedState();
 
@@ -75,6 +78,7 @@ function Document({
         <ApiProvider api={apiInstance}>
           <QueryClientProvider client={queryClient}>
             <HydrationBoundary state={dehydratedState}>
+              <GlobalProgressIndicator />
               {children}
             </HydrationBoundary>
           </QueryClientProvider>
