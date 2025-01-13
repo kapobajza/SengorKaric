@@ -12,7 +12,7 @@ import { users } from "@/api/db/schema";
 
 import { GoogleCheckQuery } from "./auth.types";
 
-describe("auth route", () => {
+describe("auth google check route", () => {
   let fastify: FastifyInstance;
 
   const queryParams = new URLSearchParams({

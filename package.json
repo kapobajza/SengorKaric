@@ -5,6 +5,7 @@
   "scripts": {
     "web:dev": "pnpm --filter web run dev",
     "api:dev": "pnpm --filter api run dev",
+    "api:test": "pnpm --filter api run test",
     "postinstall": "node ./scripts/postinstall.js"
   },
   "keywords": [],
