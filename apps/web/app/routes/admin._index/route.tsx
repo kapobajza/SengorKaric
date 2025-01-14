@@ -53,7 +53,7 @@ const renderElement = (props: RenderElementProps) => {
 
 export async function loader({ request }: Route.LoaderArgs) {
   verifyLoggedIn(request);
-  return dehydratedQueryResponse(meQueryOptions);
+  return dehydratedQueryResponse(request, meQueryOptions);
 }
 
 export default function Admin() {

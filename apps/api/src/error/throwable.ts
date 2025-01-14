@@ -17,6 +17,7 @@ type HttpErrorNarrow = Omit<
   "statusCode" | "code" | "message"
 > & {
   message?: string;
+  code?: string;
 };
 
 function constructHttpErrorParams(
@@ -34,9 +35,9 @@ export class HttpForbiddenError extends HttpError {
   constructor(httpError?: HttpErrorNarrow) {
     super(
       constructHttpErrorParams({
-        ...httpError,
         code: HttpErrorCode.Forbidden,
         statusCode: HttpErrorStatus.Forbidden,
+        ...httpError,
       }),
     );
   }
@@ -46,9 +47,9 @@ export class HttpUnauthorizedError extends HttpError {
   constructor(httpError?: HttpErrorNarrow) {
     super(
       constructHttpErrorParams({
-        ...httpError,
         code: HttpErrorCode.Unauthorized,
         statusCode: HttpErrorStatus.Unauthorized,
+        ...httpError,
       }),
     );
   }
@@ -58,9 +59,9 @@ export class HttpInternalServerError extends HttpError {
   constructor(httpError?: HttpErrorNarrow) {
     super(
       constructHttpErrorParams({
-        ...httpError,
         code: HttpErrorCode.InternalServerError,
         statusCode: HttpErrorStatus.InternalServerError,
+        ...httpError,
       }),
     );
   }
@@ -70,9 +71,9 @@ export class HttpNotFoundError extends HttpError {
   constructor(httpError?: HttpErrorNarrow) {
     super(
       constructHttpErrorParams({
-        ...httpError,
         code: HttpErrorCode.NotFound,
         statusCode: HttpErrorStatus.NotFound,
+        ...httpError,
       }),
     );
   }
@@ -82,9 +83,9 @@ export class HttpBadRequestError extends HttpError {
   constructor(httpError?: HttpErrorNarrow) {
     super(
       constructHttpErrorParams({
-        ...httpError,
         code: HttpErrorCode.BadRequest,
         statusCode: HttpErrorStatus.BadRequest,
+        ...httpError,
       }),
     );
   }
@@ -99,9 +100,9 @@ export class HttpValidationError extends HttpError {
   }: HttpErrorNarrow & { validationErrors: ValidationError[] }) {
     super(
       constructHttpErrorParams({
-        ...httpError,
         code: HttpErrorCode.ValidationError,
         statusCode: HttpErrorStatus.UnprocessableEntity,
+        ...httpError,
       }),
     );
     this.validationErrors = validationErrors;

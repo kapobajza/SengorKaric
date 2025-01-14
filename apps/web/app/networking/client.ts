@@ -22,8 +22,12 @@ const createLogger = (): ApiClientLogger | undefined => {
 };
 
 export const createWebApiClient = (
-  config: Omit<CreateApiOptions, "logger" | "baseUrl">,
+  config: Omit<CreateApiOptions, "logger" | "baseUrl"> & {
+    request: Request | undefined;
+  },
 ) => {
+  const cookieHeader = config.request?.headers.get("Cookie");
+
   return createApiClient({
     ...config,
     baseUrl: getEnvKey("PUBLIC_SK_API_URL"),
@@ -31,6 +35,16 @@ export const createWebApiClient = (
     options: {
       withCredentials: true,
       ...config.options,
+      headers: {
+        ...(config.options?.headers ?? {}),
+        ...(cookieHeader ? { Cookie: cookieHeader } : undefined),
+      },
     },
   });
+};
+
+export const defineApiConfig = <TConfig extends Record<string, unknown>>(
+  fn: (request: Request | undefined) => TConfig,
+) => {
+  return (request: Request | undefined) => fn(request);
 };
