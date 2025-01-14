@@ -1,9 +1,9 @@
 import { FastifyInstance } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import jwt from "jsonwebtoken";
+import { HttpBadRequestError } from "@/toolkit/api";
 
 import { okResponseSchema } from "@/api/types/validation.types";
-import { HttpBadRequestError } from "@/api/error/throwable";
 import { createOkReply } from "@/api/util/replies";
 import { users } from "@/api/db/schema";
 import { generateUDID } from "@/api/util/secure";

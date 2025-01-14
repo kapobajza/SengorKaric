@@ -1,10 +1,9 @@
 import { FastifyReply, FastifyRequest, HookHandlerDoneFunction } from "fastify";
 import fp from "fastify-plugin";
+import { HttpUnauthorizedError } from "@/toolkit/api";
 
 import { UserSession } from "@/api/features/auth/auth.types";
 import { FastifyCustomProp } from "@/api/types/app.types";
-
-import { HttpUnauthorizedError } from "../error/throwable";
 
 export default fp((fastify, _opts, done) => {
   type FastifyAuthParams = Parameters<typeof fastify.auth>;

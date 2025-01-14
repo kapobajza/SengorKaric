@@ -28,6 +28,7 @@ import { ThemeAppearance } from "./theme/types";
 import { getBrowserCookieThemeRaw, getHints } from "./lib/utils";
 import { getThemeCookie } from "./lib/cookie.server";
 import { GlobalProgressIndicator } from "./components/global-progress-indicator";
+import { Toaster } from "./components/ui/toaster";
 
 export const links: Route.LinksFunction = () => [
   { rel: "stylesheet", href: stylesheet },
@@ -80,6 +81,7 @@ function Document({
             <HydrationBoundary state={dehydratedState}>
               <GlobalProgressIndicator />
               {children}
+              <Toaster />
             </HydrationBoundary>
           </QueryClientProvider>
         </ApiProvider>

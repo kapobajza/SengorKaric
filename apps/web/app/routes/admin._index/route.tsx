@@ -4,7 +4,6 @@ import type { Descendant, Node } from "slate";
 import { createEditor, Transforms } from "slate";
 import type { RenderElementProps } from "slate-react";
 import { Editable, ReactEditor, Slate, withReact } from "slate-react";
-import { useMutation } from "@tanstack/react-query";
 import { withHistory } from "slate-history";
 
 import type { SlateAudioElement } from "@/web/types/slate";
@@ -14,6 +13,7 @@ import { Textarea } from "@/web/components/ui/textarea";
 import { dehydratedQueryResponse } from "@/web/query/util";
 import { meQueryOptions } from "@/web/query/user.query";
 import { RichTextToolbar } from "@/web/admin/components/rich-text/rich-text-toolbar";
+import { useMutation } from "@/web/hooks/query";
 
 import AudioRecord from "./components/audio-record";
 import type { Route } from "./+types/route";

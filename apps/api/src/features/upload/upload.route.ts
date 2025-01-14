@@ -4,8 +4,7 @@ import type { FastifyInstance } from "fastify";
 import type { ZodTypeProvider } from "fastify-type-provider-zod";
 import { z } from "zod";
 import { uploadAudioResponseSchema } from "@/toolkit/dto";
-
-import { HttpValidationError } from "@/api/error/throwable";
+import { HttpValidationError } from "@/toolkit/api";
 
 const fileRequestSchema = z.object({
   filename: z.string(),
