@@ -19,6 +19,7 @@ export const HttpErrorCode = {
   InternalServerError: "internal_server_error",
   BadRequest: "bad_request",
   Unknown: "unknown",
+  TranscriptionNotFound: "transcription_not_found",
 } as const;
 
 export const httpErrorSchema = z.object({
