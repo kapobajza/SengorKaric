@@ -1,8 +1,9 @@
-import { createWebApiClient } from "./client";
+import { createWebApiClient, defineApiConfig } from "./client";
 
-export const createAuthApi = () => {
+export const createAuthApi = defineApiConfig((request) => {
   const authApi = createWebApiClient({
     routePrefix: "auth",
+    request,
   });
 
   return {
@@ -12,18 +13,12 @@ export const createAuthApi = () => {
         body: {},
       });
     },
-    checkGoogleAuth: async (
-      searchParams: URLSearchParams,
-      sessionCookie: string | undefined | null,
-    ) => {
+    checkGoogleAuth: async (searchParams: URLSearchParams) => {
       return authApi.get({
         route: `google/check?${searchParams.toString()}`,
-        headers: {
-          Cookie: sessionCookie,
-        },
       });
     },
   };
-};
+});
 
 export type AuthApi = ReturnType<typeof createAuthApi>;
