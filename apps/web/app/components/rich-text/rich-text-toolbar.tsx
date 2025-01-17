@@ -12,9 +12,9 @@ import {
 } from "@/web/components/ui/tooltip";
 
 import { modifiers } from "./modifiers";
-import type { BlocksStore, ListBlockFormat } from "./types";
+import type { BlocksStore, ListBlockFormat, TextAlign } from "./types";
 import { useRichText } from "./rich-text-provider";
-import { isListNode } from "./util";
+import { isListNode, isTextAlignNode } from "./util";
 
 function ToolbarButton({
   icon: Icon,
@@ -70,16 +70,19 @@ function ToolbarButton({
   );
 }
 
-type ListButtonProps = {
+function ListButton({
+  block,
+  format,
+}: {
   block: BlocksStore["list-ordered"];
   format: ListBlockFormat;
-};
-
-function ListButton({ block, format }: ListButtonProps) {
+}) {
   const { blocks, editor } = useRichText();
 
   const isListActive = () => {
-    if (!editor.selection) return false;
+    if (!editor.selection) {
+      return false;
+    }
 
     // Get the parent list at selection anchor node
     const currentListEntry = Editor.above(editor, {
@@ -93,8 +96,9 @@ function ListButton({ block, format }: ListButtonProps) {
         !Editor.isEditor(currentList) &&
         isListNode(currentList) &&
         currentList.format === format
-      )
+      ) {
         return true;
+      }
     }
     return false;
   };
@@ -176,6 +180,59 @@ function ListButton({ block, format }: ListButtonProps) {
   );
 }
 
+function TextAlignButton({
+  block,
+  align,
+}: {
+  block: BlocksStore["align-center"];
+  align: TextAlign;
+}) {
+  const { editor } = useRichText();
+
+  const isActive = () => {
+    if (!editor.selection) {
+      return false;
+    }
+
+    const selected = editor.children[editor.selection.anchor.path[0] ?? -1];
+
+    if (selected && isTextAlignNode(selected)) {
+      return selected.align === align;
+    }
+
+    return false;
+  };
+
+  function toggleTextAlign() {
+    if (isActive()) {
+      Transforms.setNodes(editor, {
+        type: "paragraph",
+      });
+      return;
+    }
+
+    Transforms.setNodes(editor, {
+      type: "text-align",
+      align,
+    });
+  }
+
+  return (
+    <ToolbarButton
+      icon={block.icon}
+      name={align}
+      label={block.label}
+      isActive={isActive()}
+      disabled={false}
+      handleClick={toggleTextAlign}
+    />
+  );
+}
+
+function ToolbarSeparator() {
+  return <Toolbar.Separator className="mx-1 my-auto h-3/4 w-px bg-gray-300" />;
+}
+
 export function RichTextToolbar({
   className,
   ...props
@@ -230,10 +287,16 @@ export function RichTextToolbar({
               />
             ))}
           </Toolbar.ToggleGroup>
-          <Toolbar.Separator className="mx-1 my-auto h-3/4 w-px bg-gray-300" />
+          <ToolbarSeparator />
           <Toolbar.ToggleGroup className="flex gap-1" type="single">
             <ListButton block={blocks["list-unordered"]} format="unordered" />
             <ListButton block={blocks["list-ordered"]} format="ordered" />
+          </Toolbar.ToggleGroup>
+          <ToolbarSeparator />
+          <Toolbar.ToggleGroup className="flex gap-1" type="single">
+            <TextAlignButton block={blocks["align-left"]} align="left" />
+            <TextAlignButton block={blocks["align-center"]} align="center" />
+            <TextAlignButton block={blocks["align-right"]} align="right" />
           </Toolbar.ToggleGroup>
         </Toolbar.Root>
       </div>

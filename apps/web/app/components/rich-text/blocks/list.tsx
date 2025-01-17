@@ -74,7 +74,9 @@ const handleBackspaceKeyOnList = (
   editor: Editor,
   event: React.KeyboardEvent<HTMLElement>,
 ) => {
-  if (!editor.selection) return;
+  if (!editor.selection) {
+    return;
+  }
 
   const [currentListItem, currentListItemPath] = Editor.parent(
     editor,
@@ -286,7 +288,9 @@ const handleConvertToList = (editor: Editor, format: ListBlockFormat) => {
     type: "list-item",
   });
 
-  if (!convertedPath) return;
+  if (!convertedPath) {
+    return;
+  }
 
   Transforms.wrapNodes(
     editor,
@@ -311,7 +315,9 @@ const handleTabOnList = (editor: Editor) => {
   const [currentList] = Editor.parent(editor, currentListItemPath);
 
   // Skip tabbing if list-item is the first item in the list
-  if (currentListItem === currentList.children[0]) return;
+  if (currentListItem === currentList.children[0]) {
+    return;
+  }
 
   const currentListItemIndex = currentList.children.findIndex(
     (item) => item === currentListItem,

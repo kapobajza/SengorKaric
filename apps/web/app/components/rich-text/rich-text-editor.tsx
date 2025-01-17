@@ -12,17 +12,18 @@ import { paragraphBlocks } from "./blocks/paragraph";
 import { headingBlocks } from "./blocks/heading";
 import { listBlocks } from "./blocks/list";
 import { quoteBlocks } from "./blocks/quote";
+import { textAlignBlocks } from "./blocks/text-align";
 
 type Props = {
   initialValue?: Descendant[];
 };
 
-// TODO: add link block
 const blocks: BlocksStore = {
   ...paragraphBlocks,
   ...headingBlocks,
   ...listBlocks,
   ...quoteBlocks,
+  ...textAlignBlocks,
 };
 
 export function RichTextEditor({ initialValue }: Props) {

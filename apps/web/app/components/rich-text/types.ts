@@ -53,6 +53,14 @@ type HeadingBlockNode = {
   children: DefaultInlineNode[];
 } & BaseNode;
 
+export type TextAlign = "left" | "center" | "right";
+
+export type TextAlignBlockNode = {
+  type: "text-align";
+  align: TextAlign;
+  children: DefaultInlineNode[];
+} & BaseNode;
+
 export type ListBlockFormat = "ordered" | "unordered";
 
 export type ListBlockNode = {
@@ -67,7 +75,8 @@ type RootNode =
   | QuoteBlockNode
   | CodeBlockNode
   | HeadingBlockNode
-  | ListBlockNode;
+  | ListBlockNode
+  | TextAlignBlockNode;
 
 export type BlocksValue = RootNode[];
 
@@ -114,6 +123,9 @@ export const selectorBlockKeys = [
   "list-ordered",
   "list-unordered",
   "quote",
+  "align-left",
+  "align-center",
+  "align-right",
 ] as const;
 
 export type SelectorBlockKey = (typeof selectorBlockKeys)[number];

@@ -2,7 +2,12 @@ import { Editor, Node, Transforms } from "slate";
 import type { Element, Path, Text } from "slate";
 
 import { selectorBlockKeys } from "./types";
-import type { LinkInlineNode, ListBlockNode, SelectorBlockKey } from "./types";
+import type {
+  LinkInlineNode,
+  ListBlockNode,
+  SelectorBlockKey,
+  TextAlignBlockNode,
+} from "./types";
 
 export const isSelectorBlockKey = (key: unknown): key is SelectorBlockKey => {
   return (
@@ -75,6 +80,12 @@ export const isLinkNode = (element: Element): element is LinkInlineNode => {
 
 export const isListNode = (element: Element): element is ListBlockNode => {
   return element.type === "list";
+};
+
+export const isTextAlignNode = (
+  element: Element,
+): element is TextAlignBlockNode => {
+  return element.type === "text-align";
 };
 
 export const isText = (node: unknown): node is Text => {
