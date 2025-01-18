@@ -16,6 +16,12 @@ export const envSchema = {
     "GOOGLE_OAUTH_ALLOWED_EMAILS",
     "GOOGLE_OAUTH_STATE_SECRET",
     "GOOGLE_OAUTH_REDIRECT_URI",
+    "POSTGRES_USER",
+    "POSTGRES_PASSWORD",
+    "POSTGRES_DB",
+    "POSTGRES_HOST",
+    "POSTGRES_PORT",
+    "PGUSER",
   ],
   properties: {
     SESSION_COOKIE_NAME: {
@@ -49,6 +55,24 @@ export const envSchema = {
       type: "string",
     },
     GOOGLE_OAUTH_REDIRECT_URI: {
+      type: "string",
+    },
+    POSTGRES_USER: {
+      type: "string",
+    },
+    POSTGRES_PASSWORD: {
+      type: "string",
+    },
+    POSTGRES_DB: {
+      type: "string",
+    },
+    POSTGRES_HOST: {
+      type: "string",
+    },
+    POSTGRES_PORT: {
+      type: "integer",
+    },
+    PGUSER: {
       type: "string",
     },
   },

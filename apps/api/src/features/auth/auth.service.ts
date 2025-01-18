@@ -1,22 +1,23 @@
 import crypto from "crypto";
 
 import fp from "fastify-plugin";
-import { createApiClient } from "@/toolkit/api";
+import { ApiClientLogger, createApiClient } from "@/toolkit/api";
 
 import { registerServicePlugin } from "@/api/util/plugin";
 import { generateSignedState } from "@/api/util/sign";
 
-import { GoogleAuthResponseToken } from "./auth.types";
+import { GoogleAuthTokenResponse, GoogleUserInfoResponse } from "./auth.types";
 
 export type AuthService = {
   getGoogleAuthUri: () => {
     authorizationUrl: string;
     signedState: string;
   };
-  exchangeGoogleAuthCode: (code: string) => Promise<GoogleAuthResponseToken>;
+  exchangeGoogleAuthCode: (code: string) => Promise<GoogleAuthTokenResponse>;
   refreshGoogleAccessToken: (
     refreshToken: string,
-  ) => Promise<GoogleAuthResponseToken>;
+  ) => Promise<GoogleAuthTokenResponse>;
+  getGoogleUserInfo: (accessToken: string) => Promise<GoogleUserInfoResponse>;
 };
 
 export default fp((fastify, _opts, done) => {
@@ -32,6 +33,15 @@ export default fp((fastify, _opts, done) => {
     scope: ["openid", "profile", "email"],
   };
 
+  const logger: ApiClientLogger = {
+    error(message, args) {
+      fastify.log.error(message, args);
+    },
+    info(message, args) {
+      fastify.log.info(message, args);
+    },
+  };
+
   const googleOauthApiClient = createApiClient({
     baseUrl: GOOGLE_OAUTH2_CONFIG.tokenUri,
     options: {
@@ -40,14 +50,12 @@ export default fp((fastify, _opts, done) => {
       },
       withCredentials: true,
     },
-    logger: {
-      error(message, args) {
-        fastify.log.error(message, args);
-      },
-      info(message, args) {
-        fastify.log.info(message, args);
-      },
-    },
+    logger,
+  });
+
+  const googleUserInfoApiClient = createApiClient({
+    baseUrl: GOOGLE_OAUTH2_CONFIG.userInfoUri,
+    logger,
   });
 
   const authService: AuthService = {
@@ -75,7 +83,7 @@ export default fp((fastify, _opts, done) => {
       };
     },
     async exchangeGoogleAuthCode(code) {
-      const { data } = await googleOauthApiClient.post<GoogleAuthResponseToken>(
+      const { data } = await googleOauthApiClient.post<GoogleAuthTokenResponse>(
         {
           body: {
             code,
@@ -90,7 +98,7 @@ export default fp((fastify, _opts, done) => {
       return data;
     },
     async refreshGoogleAccessToken(refreshToken) {
-      const { data } = await googleOauthApiClient.post<GoogleAuthResponseToken>(
+      const { data } = await googleOauthApiClient.post<GoogleAuthTokenResponse>(
         {
           body: {
             refresh_token: refreshToken,
@@ -100,6 +108,16 @@ export default fp((fastify, _opts, done) => {
           },
         },
       );
+
+      return data;
+    },
+    async getGoogleUserInfo(accessToken) {
+      const { data } =
+        await googleUserInfoApiClient.get<GoogleUserInfoResponse>({
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
 
       return data;
     },

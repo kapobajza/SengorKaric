@@ -3,13 +3,19 @@ import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
 import type { VariantProps } from "class-variance-authority";
 import { PanelLeft } from "lucide-react";
+import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 
 import { useIsMobile } from "@/web/hooks/use-mobile";
 import { cn } from "@/web/lib/utils";
 import { Button } from "@/web/components/ui/button";
 import { Input } from "@/web/components/ui/input";
 import { Separator } from "@/web/components/ui/separator";
-import { Sheet, SheetContent } from "@/web/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetTitle,
+} from "@/web/components/ui/sheet";
 import {
   Tooltip,
   TooltipContent,
@@ -196,6 +202,12 @@ const Sidebar = ({
           side={side}
         >
           <div className="flex h-full w-full flex-col">{children}</div>
+          <VisuallyHidden.Root>
+            <SheetTitle>Sidebar Menu Title</SheetTitle>
+          </VisuallyHidden.Root>
+          <VisuallyHidden.Root>
+            <SheetDescription>Sidebar Menu description</SheetDescription>
+          </VisuallyHidden.Root>
         </SheetContent>
       </Sheet>
     );

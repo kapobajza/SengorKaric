@@ -7,7 +7,7 @@ import {
 import AutoLoad, { AutoloadPluginOptions } from "@fastify/autoload";
 import PrintRoutes from "fastify-print-routes";
 import { type FastifyInstance } from "fastify";
-import { ZodError } from "zod";
+import { z, ZodError } from "zod";
 import FastifyMultipart from "@fastify/multipart";
 import FastifyAuth from "@fastify/auth";
 import FastifySecureSession from "@fastify/secure-session";
@@ -18,6 +18,17 @@ import {
   HttpInternalServerError,
   HttpValidationError,
 } from "@/api/error/throwable";
+
+const fstErrValidationSchema = z.object({
+  code: z.literal("FST_ERR_VALIDATION"),
+  validation: z.array(
+    z.object({
+      params: z.object({
+        issue: z.record(z.any()),
+      }),
+    }),
+  ),
+});
 
 export async function buildApp(
   fastify: FastifyInstance,
@@ -36,6 +47,18 @@ export async function buildApp(
       return reply.status(error.statusCode).send(error);
     }
 
+    const errResponse = fstErrValidationSchema.safeParse(error);
+
+    if (errResponse.success) {
+      const responseError = new HttpValidationError({
+        validationErrors: errResponse.data.validation.map<z.ZodIssue>(
+          (issue) => issue.params.issue as z.ZodIssue,
+        ),
+      });
+      return reply.status(responseError.statusCode).send(responseError);
+    }
+
+    console.error(error);
     return reply.status(500).send(new HttpInternalServerError());
   });
 

@@ -40,7 +40,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ["apps/web/**/*.{jsx,tsx}"],
+    files: ["**/*.{jsx,tsx}"],
     plugins: {
       react,
       "react-hooks": reactHooks,
@@ -139,6 +139,7 @@ export default tseslint.config(
         },
       ],
       "@typescript-eslint/no-unnecessary-type-parameters": "off",
+      "no-else-return": ["error", { allowElseIf: false }],
     },
     plugins: {
       "unused-imports": unusedImports,

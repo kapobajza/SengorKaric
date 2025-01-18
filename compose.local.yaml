@@ -6,6 +6,9 @@ services:
       dockerfile: ./apps/api/Dockerfile
       target: local
     env_file: ./apps/api/.env.local
+    depends_on:
+      db:
+        condition: service_healthy
     ports:
       - "5050:5050"
     develop:
@@ -38,4 +41,20 @@ services:
             - ./apps/web/node_modules/
             - ./apps/web/build/
             - ./apps/web/.react-router/
-    
+
+  db:
+    image: postgres:17.2
+    restart: always
+    env_file: ./apps/api/.env.local
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 1s
+      timeout: 20s
+      retries: 10
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - 5435:5432
+
+volumes:
+  db_data:
