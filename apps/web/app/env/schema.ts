@@ -16,3 +16,5 @@ export const envSchema = publicEnvSchema.extend({
 } satisfies EnvSchemaRecod);
 
 export type Env = z.infer<typeof envSchema>;
+
+export type PublicEnv = z.infer<typeof publicEnvSchema>;

@@ -1,12 +1,11 @@
 import React from "react";
 import type { ComponentProps } from "react";
-import { SunIcon, MoonIcon } from "lucide-react";
+import { MoonIcon, SunIcon } from "lucide-react";
 
 import { SidebarTrigger } from "@/web/components/ui/sidebar";
 import { cn } from "@/web/lib/utils";
 import { Button } from "@/web/components/ui/button";
 import { useMeQueryCached } from "@/web/query/user.query";
-import { useAdminTheme } from "@/web/admin/providers/admin-theme-provider";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,6 +19,7 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/web/components/ui/avatar";
+import { useThemeSwitch } from "@/web/hooks/use-theme-switch";
 
 function ProfileDropdown() {
   const { data, isLoading } = useMeQueryCached();
@@ -67,7 +67,7 @@ export default function AdminHeader({
   ...otherProps
 }: ComponentProps<"header">) {
   const [offset, setOffset] = React.useState(0);
-  const { theme, setThemeAppearance } = useAdminTheme();
+  const { mutate: toggleTheme } = useThemeSwitch();
 
   React.useEffect(() => {
     const onScroll = () => {
@@ -97,10 +97,11 @@ export default function AdminHeader({
           size="icon"
           className="rounded-full"
           onClick={() => {
-            setThemeAppearance(theme.appearance === "dark" ? "light" : "dark");
+            toggleTheme();
           }}
         >
-          {theme.appearance === "dark" ? <SunIcon /> : <MoonIcon />}
+          <SunIcon className="transition-all dark:hidden" />
+          <MoonIcon className="hidden transition-all dark:block" />
         </Button>
         <ProfileDropdown />
       </div>

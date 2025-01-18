@@ -1,11 +1,8 @@
-import axios, { AxiosError, AxiosRequestConfig } from "axios";
+import type { AxiosError, AxiosRequestConfig } from "axios";
+import axios from "axios";
 
-import {
-  HttpError,
-  HttpErrorCode,
-  HttpErrorSchema,
-  httpErrorSchema,
-} from "./error";
+import type { HttpErrorSchema } from "./error";
+import { HttpError, HttpErrorCode, httpErrorSchema } from "./error";
 
 type ApiMethodAdditionalOptions = {
   queryParams?: Record<string, string | number | boolean>;

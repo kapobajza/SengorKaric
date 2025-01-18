@@ -7,6 +7,12 @@ export default [
   ...baseConfig,
   generateTSLanguageOptions(),
   {
+    files: ["**/*.{ts,tsx}"],
+    rules: {
+      "@typescript-eslint/consistent-type-imports": "error",
+    },
+  },
+  {
     rules: {
       "no-console": "off",
     },
