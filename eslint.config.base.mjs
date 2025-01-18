@@ -138,6 +138,7 @@ export default tseslint.config(
       ],
       "@typescript-eslint/no-unnecessary-type-parameters": "off",
       "no-else-return": ["error", { allowElseIf: false }],
+      curly: ["error", "all"],
     },
     plugins: {
       "unused-imports": unusedImports,
