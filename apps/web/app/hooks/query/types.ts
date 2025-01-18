@@ -4,6 +4,7 @@ import type {
   UndefinedInitialDataOptions,
   UseQueryResult as UseTRQueryResult,
   UseInfiniteQueryResult as UseTRInfiniteQueryResult,
+  UseMutationOptions as UseTRMutationOptions,
 } from "@tanstack/react-query";
 
 export type AdditionalQueryOptions<TData = unknown> = {
@@ -31,3 +32,13 @@ export type UseInfiniteQueryResult<
   TData = unknown,
   TError = DefaultError,
 > = UseTRInfiniteQueryResult<TData, TError> & AdditionalQueryResult;
+
+export type UseMutationOptions<
+  TData = unknown,
+  TError = DefaultError,
+  TVariables = void,
+  TContext = unknown,
+> = UseTRMutationOptions<TData, TError, TVariables, TContext> & {
+  /** Show toast on error - default: true */
+  showToast?: boolean;
+};

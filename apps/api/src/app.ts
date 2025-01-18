@@ -11,13 +11,13 @@ import { z, ZodError } from "zod";
 import FastifyMultipart from "@fastify/multipart";
 import FastifyAuth from "@fastify/auth";
 import FastifySecureSession from "@fastify/secure-session";
-import { HttpError } from "@/toolkit/api";
-
-import type { FastifyAppInstanceOptions } from "@/api/types/app.types";
 import {
+  HttpError,
   HttpInternalServerError,
   HttpValidationError,
-} from "@/api/error/throwable";
+} from "@/toolkit/api";
+
+import type { FastifyAppInstanceOptions } from "@/api/types/app.types";
 
 const fstErrValidationSchema = z.object({
   code: z.literal("FST_ERR_VALIDATION"),

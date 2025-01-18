@@ -2,8 +2,8 @@ import { FastifyInstance } from "fastify";
 import { meUserDtoSchema } from "@/toolkit/dto";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { eq } from "drizzle-orm";
+import { HttpForbiddenError } from "@/toolkit/api/error";
 
-import { HttpForbiddenError } from "@/api/error/throwable";
 import { users } from "@/api/db/schema";
 
 export default function usersRoute(

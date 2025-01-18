@@ -4,10 +4,9 @@ import path from "path";
 import speech from "@google-cloud/speech";
 import fp from "fastify-plugin";
 import { getRelativeMonoRepoPath } from "@/toolkit/util";
-import { HttpErrorCode } from "@/toolkit/api";
+import { HttpErrorCode, HttpNotFoundError } from "@/toolkit/api";
 
 import { registerServicePlugin } from "@/api/util/plugin";
-import { HttpNotFoundError } from "@/api/error/throwable";
 
 export type SpeechService = {
   transcribe: (base64Content: string) => Promise<string>;
