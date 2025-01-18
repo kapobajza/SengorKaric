@@ -1,13 +1,11 @@
 import type { UploadAudioResponse } from "@/toolkit/dto";
 
-import { createWebApiClient } from "./client";
+import { createWebApiClient, defineApiConfig } from "./client";
 
-export const createUploadApi = () => {
+export const createUploadApi = defineApiConfig((request) => {
   const uploadApi = createWebApiClient({
     routePrefix: "upload",
-    options: {
-      withCredentials: true,
-    },
+    request,
   });
 
   return {
@@ -21,4 +19,4 @@ export const createUploadApi = () => {
       });
     },
   };
-};
+});

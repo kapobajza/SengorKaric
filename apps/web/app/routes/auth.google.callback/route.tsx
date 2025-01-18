@@ -9,10 +9,8 @@ export async function loader({ request }: Route.LoaderArgs) {
   const searchParams = new URL(request.url).searchParams;
 
   try {
-    const { headers } = await api().authApi.checkGoogleAuth(
-      searchParams,
-      request.headers.get("Cookie"),
-    );
+    const { headers } =
+      await api(request).authApi.checkGoogleAuth(searchParams);
 
     const setCookie = headers["set-cookie"]?.[0];
 

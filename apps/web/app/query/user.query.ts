@@ -1,7 +1,6 @@
-import type { FetchQueryOptions } from "@tanstack/react-query";
-
-import { api } from "@/web/networking/instance";
 import { useQuery } from "@/web/hooks/query";
+
+import { defineQueryOptions } from "./util";
 
 const usersQueryPrefix = "users";
 
@@ -9,12 +8,12 @@ export const userQueryKey = {
   me: [usersQueryPrefix, "me"],
 } as const;
 
-export const meQueryOptions = {
+export const meQueryOptions = defineQueryOptions({
   queryKey: userQueryKey.me,
-  queryFn() {
-    return api().userApi.me();
+  queryFn({ api }) {
+    return api.userApi.me();
   },
-} satisfies FetchQueryOptions;
+});
 
 export function useMeQuery() {
   return useQuery(meQueryOptions);

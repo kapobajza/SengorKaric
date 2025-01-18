@@ -1,10 +1,14 @@
 import type { UserMeDto } from "@/toolkit/dto";
 
-import { createWebApiClient } from "./client";
+import { createWebApiClient, defineApiConfig } from "./client";
 
-export const createUserApi = () => {
+export const createUserApi = defineApiConfig((request) => {
   const userApi = createWebApiClient({
     routePrefix: "users",
+    request,
+    options: {
+      withCredentials: true,
+    },
   });
 
   return {
@@ -16,6 +20,6 @@ export const createUserApi = () => {
       return data;
     },
   };
-};
+});
 
 export type UserApi = ReturnType<typeof createUserApi>;
