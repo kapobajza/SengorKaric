@@ -24,33 +24,14 @@ import {
 } from "@/web/components/ui/tooltip";
 import { Skeleton } from "@/web/components/ui/skeleton";
 
+import { SidebarContext, useSidebar } from "./util";
+
 const SIDEBAR_COOKIE_NAME = "sidebar:state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 const SIDEBAR_WIDTH = "16rem";
 const SIDEBAR_WIDTH_MOBILE = "18rem";
 const SIDEBAR_WIDTH_ICON = "3rem";
 const SIDEBAR_KEYBOARD_SHORTCUT = "b";
-
-type SidebarContext = {
-  state: "expanded" | "collapsed";
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  openMobile: boolean;
-  setOpenMobile: (open: boolean) => void;
-  isMobile: boolean;
-  toggleSidebar: () => void;
-};
-
-const SidebarContext = React.createContext<SidebarContext | null>(null);
-
-function useSidebar() {
-  const context = React.useContext(SidebarContext);
-  if (!context) {
-    throw new Error("useSidebar must be used within a SidebarProvider.");
-  }
-
-  return context;
-}
 
 const SidebarProvider = ({
   defaultOpen = true,
@@ -88,14 +69,14 @@ const SidebarProvider = ({
     [setOpenProp, open],
   );
 
-  const toggleSidebar = () => {
+  const toggleSidebar = React.useCallback(() => {
     if (isMobile) {
       setOpenMobile((open) => !open);
       return;
     }
 
     setOpen((open) => !open);
-  };
+  }, [isMobile, setOpen]);
 
   React.useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -757,5 +738,4 @@ export {
   SidebarRail,
   SidebarSeparator,
   SidebarTrigger,
-  useSidebar,
 };

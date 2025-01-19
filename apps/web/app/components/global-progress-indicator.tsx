@@ -12,8 +12,12 @@ export function GlobalProgressIndicator() {
   const [animationComplete, setAnimationComplete] = useState(true);
 
   useEffect(() => {
-    if (!ref.current) return;
-    if (active) setAnimationComplete(false);
+    if (!ref.current) {
+      return;
+    }
+    if (active) {
+      setAnimationComplete(false);
+    }
 
     let timeout: NodeJS.Timeout;
 

@@ -1,72 +1,38 @@
-import { ReactEditor } from "slate-react";
 import * as Toolbar from "@radix-ui/react-toolbar";
 import { Editor, Transforms } from "slate";
+import { ReactEditor } from "slate-react";
 
-import { Button } from "@/web/components/ui/button";
 import { cn } from "@/web/lib/utils";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/web/components/ui/tooltip";
+import { TooltipProvider } from "@/web/components/ui/tooltip";
+import { modifiers } from "@/web/components/rich-text/modifiers";
+import type {
+  BlocksStore,
+  ListBlockFormat,
+  TextAlign,
+} from "@/web/components/rich-text/types";
+import { useRichText } from "@/web/components/rich-text/provider";
+import { isListNode, isTextAlignNode } from "@/web/components/rich-text/util";
+import { AudioRecordDialog } from "@/web/components/rich-text/audio/audio-record-dialog";
 
-import { modifiers } from "./modifiers";
-import type { BlocksStore, ListBlockFormat, TextAlign } from "./types";
-import { useRichText } from "./rich-text-provider";
-import { isListNode, isTextAlignNode } from "./util";
+import { RichTextToolbarButton } from "./rich-text-toolbar-button";
+import type { RichTextToolbarButtonProps } from "./rich-text-toolbar-button";
 
-function ToolbarButton({
-  icon: Icon,
-  name,
-  label,
-  isActive,
-  handleClick,
-  disabled,
-}: {
-  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-  name: string;
-  label: string;
-  isActive: boolean;
-  handleClick: () => void;
-  disabled: boolean;
-}) {
+function ToggleToolbarButton(
+  props: Omit<RichTextToolbarButtonProps, "handleClick"> & {
+    handleClick: () => void;
+  },
+) {
   const { editor } = useRichText();
 
   return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <Toolbar.ToggleItem
-          aria-disabled={disabled}
-          disabled={disabled}
-          value={name}
-          data-state={isActive ? "on" : "off"}
-          onMouseDown={(e) => {
-            e.preventDefault();
-            handleClick();
-            ReactEditor.focus(editor);
-          }}
-          aria-label={label}
-          asChild
-        >
-          <Button
-            variant="ghost"
-            size="icon"
-            className={cn(
-              "h-7 w-7",
-              isActive &&
-                "bg-primary-600 text-white hover:bg-primary-600 hover:text-white",
-            )}
-            aria-label={label}
-          >
-            <Icon className={cn("h-4 w-4")} />
-          </Button>
-        </Toolbar.ToggleItem>
-      </TooltipTrigger>
-      <TooltipContent>
-        <p>{label}</p>
-      </TooltipContent>
-    </Tooltip>
+    <RichTextToolbarButton
+      {...props}
+      handleClick={(e) => {
+        e.preventDefault();
+        props.handleClick();
+        ReactEditor.focus(editor);
+      }}
+    />
   );
 }
 
@@ -167,7 +133,7 @@ function ListButton({
   };
 
   return (
-    <ToolbarButton
+    <RichTextToolbarButton
       icon={block.icon}
       name={format}
       label={block.label}
@@ -218,7 +184,7 @@ function TextAlignButton({
   }
 
   return (
-    <ToolbarButton
+    <ToggleToolbarButton
       icon={block.icon}
       name={align}
       label={block.label}
@@ -274,7 +240,7 @@ export function RichTextToolbar({
         <Toolbar.Root className="flex">
           <Toolbar.ToggleGroup type="multiple" className="flex gap-1">
             {Object.entries(modifiers).map(([name, modifier]) => (
-              <ToolbarButton
+              <ToggleToolbarButton
                 key={name}
                 name={name}
                 icon={modifier.icon}
@@ -297,6 +263,10 @@ export function RichTextToolbar({
             <TextAlignButton block={blocks["align-left"]} align="left" />
             <TextAlignButton block={blocks["align-center"]} align="center" />
             <TextAlignButton block={blocks["align-right"]} align="right" />
+          </Toolbar.ToggleGroup>
+          <ToolbarSeparator />
+          <Toolbar.ToggleGroup className="flex gap-1" type="single">
+            <AudioRecordDialog />
           </Toolbar.ToggleGroup>
         </Toolbar.Root>
       </div>

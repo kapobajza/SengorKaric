@@ -39,11 +39,14 @@ export default tseslint.config(
   {
     files: ["**/*.{jsx,tsx}"],
     plugins: {
-      react,
-      "react-hooks": reactHooks,
-      "react-refresh": reactRefresh,
       "jsx-a11y": jsxA11y,
+      "react-hooks": reactHooks,
     },
+    extends: [
+      react.configs.flat?.recommended,
+      react.configs.flat["jsx-runtime"],
+      reactRefresh.configs.recommended,
+    ],
     settings: {
       react: {
         version: "detect",
@@ -55,31 +58,21 @@ export default tseslint.config(
       ],
     },
     rules: {
+      ...jsxA11y.configs.strict.rules,
+      ...reactHooks.configs.recommended.rules,
       "react/display-name": "error",
       "react/jsx-no-leaked-render": "error",
-    },
-  },
-  {
-    files: ["**/*.{jsx,tsx}"],
-    plugins: {
-      react,
-      "react-hooks": reactHooks,
-      "react-refresh": reactRefresh,
-      "jsx-a11y": jsxA11y,
-    },
-    settings: {
-      react: {
-        version: "detect",
-      },
-      formComponents: ["Form"],
-      linkComponents: [
-        { name: "Link", linkAttribute: "to" },
-        { name: "NavLink", linkAttribute: "to" },
+      "react-refresh/only-export-components": [
+        "error",
+        { allowExportNames: ["meta", "links", "headers", "loader", "action"] },
       ],
     },
-    rules: {
-      "react/display-name": "error",
-      "react/jsx-no-leaked-render": "error",
+    languageOptions: {
+      parserOptions: {
+        ecmaFeatures: {
+          jsx: true,
+        },
+      },
     },
   },
   eslintConfigPrettier,
