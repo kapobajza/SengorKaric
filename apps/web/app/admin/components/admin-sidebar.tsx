@@ -11,7 +11,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/web/components/ui/sidebar";
+} from "@/web/components/ui/sidebar/sidebar";
 
 export default function AdminSidebar() {
   const location = useLocation();

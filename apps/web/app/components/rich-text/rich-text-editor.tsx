@@ -4,9 +4,9 @@ import type { Descendant } from "slate";
 import { withHistory } from "slate-history";
 import { Slate, withReact } from "slate-react";
 
-import { RichTextToolbar } from "./rich-text-toolbar";
+import { RichTextToolbar } from "./toolbar/rich-text-toolbar";
 import { RichTextContent } from "./rich-text-content";
-import { RichTextProvider } from "./rich-text-provider";
+import { RichTextProvider } from "./provider/rich-text-provider";
 import type { BlocksStore } from "./types";
 import { paragraphBlocks } from "./blocks/paragraph";
 import { headingBlocks } from "./blocks/heading";

@@ -1,23 +1,15 @@
 import { createContext, useContext } from "react";
 import { useSlate } from "slate-react";
 
-import type { BlocksStore } from "./types";
+import type { BlocksStore } from "@/web/components/rich-text/types";
 
-type RichTextContext = {
+export type RichTextContext = {
   blocks: BlocksStore;
 };
 
-const RichTextContext = createContext<RichTextContext | undefined>(undefined);
-
-export function RichTextProvider({
-  children,
-  blocks,
-}: {
-  children: React.ReactNode;
-  blocks: BlocksStore;
-}) {
-  return <RichTextContext value={{ blocks }}>{children}</RichTextContext>;
-}
+export const RichTextContext = createContext<RichTextContext | undefined>(
+  undefined,
+);
 
 export function useRichText() {
   const context = useContext(RichTextContext);
