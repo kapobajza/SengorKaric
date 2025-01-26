@@ -3,6 +3,7 @@ import type { Element, Path, Text } from "slate";
 
 import { selectorBlockKeys } from "./types";
 import type {
+  AudioBlockNode,
   LinkInlineNode,
   ListBlockNode,
   SelectorBlockKey,
@@ -80,6 +81,10 @@ export const isLinkNode = (element: Element): element is LinkInlineNode => {
 
 export const isListNode = (element: Element): element is ListBlockNode => {
   return element.type === "list";
+};
+
+export const isAudioNode = (element: Element): element is AudioBlockNode => {
+  return element.type === "audio";
 };
 
 export const isTextAlignNode = (

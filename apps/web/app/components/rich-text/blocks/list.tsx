@@ -12,38 +12,7 @@ import type {
   ListBlockFormat,
 } from "@/web/components/rich-text/types";
 
-import { List } from "./compnents";
-
-// const List = ({ attributes, children, element }: RenderElementProps) => {
-//   if (!isListNode(element)) {
-//     return null;
-//   }
-
-//   // Decide the subsequent style by referencing the given styles according to the format,
-//   // allowing for infinite nested lists
-//   const listStyles =
-//     element.format === "ordered" ? orderedStyles : unorderedStyles;
-//   const nextIndex = (element.indentLevel || 0) % listStyles.length;
-//   const listStyle: React.CSSProperties = {
-//     listStyleType: listStyles[nextIndex],
-//     marginBlockStart: 0,
-//     marginBlockEnd: 0,
-//   };
-
-//   if (element.format === "ordered") {
-//     return (
-//       <ol style={listStyle} className={listClasses} {...attributes}>
-//         {children}
-//       </ol>
-//     );
-//   }
-
-//   return (
-//     <ul style={listStyle} className={listClasses} {...attributes}>
-//       {children}
-//     </ul>
-//   );
-// };
+import { List } from "./components";
 
 const replaceListWithEmptyBlock = (editor: Editor, currentListPath: Path) => {
   // Delete the empty list
