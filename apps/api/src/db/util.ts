@@ -1,5 +1,8 @@
-import { EnvRecord } from "@/api/env/util";
+import { timestamp } from "drizzle-orm/pg-core";
 
-export function generatePostgressConnectionUri(env: EnvRecord) {
-  return `postgres://${env.POSTGRES_USER}:${env.POSTGRES_PASSWORD}@${env.POSTGRES_HOST}:${env.POSTGRES_PORT}/${env.POSTGRES_DB}`;
+export function generateCommonDbTableFields() {
+  return {
+    createdAt: timestamp().defaultNow().notNull(),
+    updatedAt: timestamp().defaultNow().notNull(),
+  };
 }

@@ -12,11 +12,11 @@ export default fp((fastify, _opts, done) => {
     FastifyCustomProp.Db,
     drizzle<DbSchema>({
       connection: {
-        user: env.POSTGRES_USER,
-        password: env.POSTGRES_PASSWORD,
-        database: env.POSTGRES_DB,
-        host: env.POSTGRES_HOST,
-        port: env.POSTGRES_PORT,
+        user: env.DB_USER,
+        password: env.DB_PASSWORD,
+        database: env.DB_NAME,
+        host: env.DB_HOST,
+        port: env.DB_PORT,
         ssl: false,
       },
       logger: {

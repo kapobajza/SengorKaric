@@ -6,6 +6,7 @@
     "web:dev": "pnpm --filter web run dev",
     "api:dev": "pnpm --filter api run dev",
     "api:test": "pnpm --filter api run test",
+    "api:migrate": "pnpm --filter api run migrate",
     "postinstall": "node ./scripts/postinstall.js"
   },
   "keywords": [],

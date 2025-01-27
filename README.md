@@ -41,22 +41,38 @@ Now, to get started you should first run
 pnpm install
 ```
 
-And after that you can run:
+### Running migrations
+
+To run migrations, you should first start the db container:
 
 ```sh
-docker compose -f compose.local.yaml up -d
+docker compose up -d db
+```
+
+After that you can run
+
+```sh
+pnpm run api:migrate
+```
+
+### Starting the app
+
+After successfully running migrations, you can start the app:
+
+```sh
+docker compose up -d
 ```
 
 Or if you want to start docker in watch mode, so that you can watch file changes and apply them immediately:
 
 ```sh
-docker compose -f compose.local.yaml watch
+docker compose watch
 ```
 
 After the app starts, you can access it on [http://localhost:3000](http://localhost:3000) (if you're using the default port).
 
 The API can be accessed on [http://localhost:5050](http://localhost:5050).
 
-### Commit messages
+## Commit messages
 
 When committing changes you should follow the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification.

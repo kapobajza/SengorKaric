@@ -29,11 +29,11 @@ export async function buildTestApp() {
     GOOGLE_OAUTH_REDIRECT_URI: "test",
     GOOGLE_OAUTH_STATE_SECRET: "test",
     PGUSER: "test",
-    POSTGRES_DB: postgresContainer.getDatabase(),
-    POSTGRES_HOST: postgresContainer.getHost(),
-    POSTGRES_PASSWORD: postgresContainer.getPassword(),
-    POSTGRES_PORT: postgresContainer.getPort(),
-    POSTGRES_USER: postgresContainer.getUsername(),
+    DB_NAME: postgresContainer.getDatabase(),
+    DB_HOST: postgresContainer.getHost(),
+    DB_PASSWORD: postgresContainer.getPassword(),
+    DB_PORT: postgresContainer.getPort(),
+    DB_USER: postgresContainer.getUsername(),
     SESSION_SECRET_SALT: "test",
   };
 

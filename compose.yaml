@@ -41,20 +41,25 @@ services:
             - ./apps/web/node_modules/
             - ./apps/web/build/
             - ./apps/web/.react-router/
-
   db:
-    image: postgres:17.2
+    image: postgres:17.2-alpine
     restart: always
-    env_file: ./apps/api/.env.local
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secure
+      - POSTGRES_DB=sengor_karic
+      - POSTGRES_HOST=localhost
+      - POSTGRES_PORT=5435
+      - PGUSER=postgres
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
       interval: 1s
       timeout: 20s
       retries: 10
     volumes:
-      - db_data:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql/data
     ports:
       - 5435:5432
 
 volumes:
-  db_data:
+  db-data:
