@@ -25,7 +25,7 @@ import { ClientHintCheck } from "./components/client-hint-check";
 import { useDehydratedState } from "./hooks/use-dehydrated-state";
 import type { RootLoaderData } from "./types/loader";
 import { ThemeAppearance } from "./theme/types";
-import { getBrowserCookieThemeRaw, getHints } from "./lib/utils";
+import { getBrowserCookieTheme, getHints } from "./lib/utils";
 import { getThemeCookie } from "./lib/cookie.server";
 import { GlobalProgressIndicator } from "./components/global-progress-indicator";
 import { Toaster } from "./components/ui/toaster";
@@ -134,7 +134,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
         <script
           dangerouslySetInnerHTML={{
             __html: `
-          const getBrowserCookieTheme = ${getBrowserCookieThemeRaw.toString()};
+          const getBrowserCookieTheme = ${getBrowserCookieTheme.toString()};
           let cookieTheme = getBrowserCookieTheme();
 
           if (cookieTheme) {
