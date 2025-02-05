@@ -224,7 +224,10 @@ export function RichTextContent() {
   };
 
   return (
-    <Textarea className="mb-6 flex min-h-52 w-full grow-[1]" asChild>
+    <Textarea
+      className="mb-6 flex min-h-52 w-full grow-[1] rounded-none rounded-b-md"
+      asChild
+    >
       <Editable
         disableDefaultStyles
         className="h-full flex-col gap-1 whitespace-pre break-words"

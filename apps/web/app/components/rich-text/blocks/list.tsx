@@ -3,11 +3,12 @@ import { Editor, Path, Transforms } from "slate";
 import { List as BulletList, ListOrdered } from "lucide-react";
 
 import {
-  baseHandleConvert,
+  getAttributesToClear,
   isListNode,
   isText,
 } from "@/web/components/rich-text/util";
 import type {
+  BlocksNode,
   BlocksStore,
   ListBlockFormat,
 } from "@/web/components/rich-text/types";
@@ -249,18 +250,46 @@ const handleEnterKeyOnList = (editor: Editor) => {
  * Common handler for converting a node to a list
  */
 const handleConvertToList = (editor: Editor, format: ListBlockFormat) => {
-  const convertedPath = baseHandleConvert(editor, {
-    type: "list-item",
+  const [_, lastNodePath] = Editor.last(editor, []);
+
+  // If the selection is inside a list, split the list so that the modified block is outside of it
+  Transforms.unwrapNodes(editor, {
+    match: (node) => !Editor.isEditor(node) && node.type === "list",
+    split: true,
+    at: editor.selection ?? lastNodePath,
   });
 
-  if (!convertedPath) {
+  // Make sure we get a block node, not an inline node
+  const [, updatedLastNodePath] = Editor.last(editor, []);
+  const entry = Editor.above(editor, {
+    match: (node) =>
+      !Editor.isEditor(node) && node.type !== "text" && node.type !== "link",
+    at: editor.selection ?? updatedLastNodePath,
+  });
+
+  if (!entry || Editor.isEditor(entry[0])) {
+    return;
+  }
+
+  const [element, elementPath] = entry as [BlocksNode, Path | undefined];
+
+  Transforms.setNodes(
+    editor,
+    {
+      ...getAttributesToClear(element),
+      type: "list-item",
+    } as Partial<Node>,
+    { at: elementPath },
+  );
+
+  if (!elementPath) {
     return;
   }
 
   Transforms.wrapNodes(
     editor,
     { type: "list", format, children: [] },
-    { at: convertedPath },
+    { at: elementPath },
   );
 };
 
@@ -287,7 +316,9 @@ const handleTabOnList = (editor: Editor) => {
   const currentListItemIndex = currentList.children.findIndex(
     (item) => item === currentListItem,
   );
-  const previousNode = currentList.children[currentListItemIndex - 1];
+  const previousNode = currentList.children[currentListItemIndex - 1] as
+    | BlocksNode
+    | undefined;
 
   // If previous node is a list block then move the list-item under it
   if (previousNode?.type === "list") {

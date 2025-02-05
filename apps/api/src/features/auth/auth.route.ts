@@ -35,8 +35,12 @@ export default function auth(
       const env = fastify.getEnvs();
       const state = request.session.get("oauthstate");
 
-      if (!fastify.isCsrfProtected(state, request.query.state)) {
-        throw new HttpBadRequestError({ message: "Invalid state" });
+      try {
+        if (!fastify.isCsrfProtected(state, request.query.state)) {
+          throw new HttpBadRequestError({ message: "Invalid state" });
+        }
+      } finally {
+        request.session.set("oauthstate", undefined);
       }
 
       const token = await fastify.service.auth.exchangeGoogleAuthCode(

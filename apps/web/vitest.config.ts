@@ -1,0 +1,17 @@
+import { defineConfig } from "vitest/config";
+import tsconfigPaths from "vite-tsconfig-paths";
+import react from "@vitejs/plugin-react";
+
+export default defineConfig(() => {
+  return {
+    plugins: [tsconfigPaths(), react()],
+    test: {
+      browser: {
+        name: "chromium",
+        enabled: true,
+        provider: "playwright",
+        instances: [{ browser: "chromium" }],
+      },
+    },
+  };
+});

@@ -14,6 +14,7 @@ type TextInlineNode = {
 type BaseNode = {
   type: string;
   children: unknown[];
+  className?: string;
 };
 
 type InlineNode = TextInlineNode | LinkInlineNode | ListItemInlineNode;
@@ -31,7 +32,7 @@ type ListItemInlineNode = {
   children: (TextInlineNode | LinkInlineNode)[];
 } & BaseNode;
 
-type ParagraphBlockNode = {
+export type ParagraphBlockNode = {
   type: "paragraph";
   children: DefaultInlineNode[];
 } & BaseNode;
@@ -41,13 +42,7 @@ type QuoteBlockNode = {
   children: DefaultInlineNode[];
 } & BaseNode;
 
-type CodeBlockNode = {
-  type: "code";
-  language?: string;
-  children: DefaultInlineNode[];
-} & BaseNode;
-
-type HeadingBlockNode = {
+export type HeadingBlockNode = {
   type: "heading";
   level: 1 | 2 | 3 | 4 | 5 | 6;
   children: DefaultInlineNode[];
@@ -76,13 +71,11 @@ export type ListBlockNode = {
   indentLevel?: number;
 } & BaseNode;
 
-type RootNode =
+export type RootNode =
   | ParagraphBlockNode
   | QuoteBlockNode
-  | CodeBlockNode
   | HeadingBlockNode
   | ListBlockNode
-  | TextAlignBlockNode
   | AudioBlockNode;
 
 export type BlocksValue = RootNode[];
@@ -121,18 +114,15 @@ type NonSelectorBlockKey = "list-item";
 
 export const selectorBlockKeys = [
   "paragraph",
-  "heading-one",
-  "heading-two",
-  "heading-three",
-  "heading-four",
-  "heading-five",
-  "heading-six",
+  "heading-1",
+  "heading-2",
+  "heading-3",
+  "heading-4",
+  "heading-5",
+  "heading-6",
   "list-ordered",
   "list-unordered",
   "quote",
-  "align-left",
-  "align-center",
-  "align-right",
   "audio",
 ] as const;
 
@@ -143,3 +133,54 @@ export type BlocksStore = {
 } & {
   [K in NonSelectorBlockKey]: NonSelectorBlock;
 };
+
+export type RichTextSelectedDropdownNode = {
+  label: string;
+  value: Extract<
+    SelectorBlockKey,
+    | "heading-1"
+    | "heading-2"
+    | "heading-3"
+    | "heading-4"
+    | "heading-5"
+    | "heading-6"
+    | "paragraph"
+  >;
+};
+
+export const RichTextSelectedDropdownNodeMap = {
+  paragraph: {
+    label: "Text",
+    value: "paragraph",
+  },
+  "heading-1": {
+    label: "Heading 1",
+    value: "heading-1",
+  },
+  "heading-2": {
+    label: "Heading 2",
+    value: "heading-2",
+  },
+  "heading-3": {
+    label: "Heading 3",
+    value: "heading-3",
+  },
+  "heading-4": {
+    label: "Heading 4",
+    value: "heading-4",
+  },
+  "heading-5": {
+    label: "Heading 5",
+    value: "heading-5",
+  },
+  "heading-6": {
+    label: "Heading 6",
+    value: "heading-6",
+  },
+} as const satisfies Record<
+  RichTextSelectedDropdownNode["value"],
+  RichTextSelectedDropdownNode
+>;
+
+export type RichTextSelectedDropdownNodeMap =
+  typeof RichTextSelectedDropdownNodeMap;

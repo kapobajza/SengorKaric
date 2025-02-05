@@ -1,13 +1,13 @@
 import { Editor, Node, Transforms } from "slate";
-import type { Element, Path, Text } from "slate";
+import type { Element, Text } from "slate";
 
 import { selectorBlockKeys } from "./types";
 import type {
   AudioBlockNode,
+  HeadingBlockNode,
   LinkInlineNode,
   ListBlockNode,
   SelectorBlockKey,
-  TextAlignBlockNode,
 } from "./types";
 
 export const isSelectorBlockKey = (key: unknown): key is SelectorBlockKey => {
@@ -38,41 +38,42 @@ export const getAttributesToClear = (element: Element) => {
 export const baseHandleConvert = <T extends Element>(
   editor: Editor,
   attributesToSet: Partial<T> & { type: T["type"] },
-): Path | undefined => {
-  // If there is no selection, convert last inserted node
-  const [_, lastNodePath] = Editor.last(editor, []);
-
-  // If the selection is inside a list, split the list so that the modified block is outside of it
-  Transforms.unwrapNodes(editor, {
-    match: (node) => !Editor.isEditor(node) && node.type === "list",
-    split: true,
-    at: editor.selection ?? lastNodePath,
-  });
-
-  // Make sure we get a block node, not an inline node
-  const [, updatedLastNodePath] = Editor.last(editor, []);
-  const entry = Editor.above(editor, {
-    match: (node) =>
-      !Editor.isEditor(node) && node.type !== "text" && node.type !== "link",
-    at: editor.selection ?? updatedLastNodePath,
-  });
-
-  if (!entry || Editor.isEditor(entry[0])) {
+) => {
+  if (!editor.selection) {
     return;
   }
 
-  const [element, elementPath] = entry;
+  // Get the range of the current selection
+  const range = Editor.range(editor, editor.selection);
 
-  Transforms.setNodes(
-    editor,
-    {
-      ...getAttributesToClear(element),
-      ...attributesToSet,
-    } as Partial<Element>,
-    { at: elementPath },
+  // Unwrap any list items if they exist
+  Transforms.unwrapNodes(editor, {
+    match: (node) => !Editor.isEditor(node) && node.type === "list",
+    split: true,
+    at: range,
+  });
+
+  // Get all the block nodes in the selection
+  const blockEntries = Array.from(
+    Editor.nodes(editor, {
+      at: range,
+      match: (n) => Editor.isBlock(editor, n as Element),
+    }),
   );
 
-  return elementPath;
+  // Apply the conversion to all selected blocks
+  blockEntries.forEach(([node, path]) => {
+    if (!Editor.isEditor(node)) {
+      Transforms.setNodes(
+        editor,
+        {
+          ...getAttributesToClear(node as Element),
+          ...attributesToSet,
+        } as Partial<Node>,
+        { at: path },
+      );
+    }
+  });
 };
 
 export const isLinkNode = (element: Element): element is LinkInlineNode => {
@@ -87,10 +88,10 @@ export const isAudioNode = (element: Element): element is AudioBlockNode => {
   return element.type === "audio";
 };
 
-export const isTextAlignNode = (
+export const isHeadingNode = (
   element: Element,
-): element is TextAlignBlockNode => {
-  return element.type === "text-align";
+): element is HeadingBlockNode => {
+  return element.type === "heading";
 };
 
 export const isText = (node: unknown): node is Text => {

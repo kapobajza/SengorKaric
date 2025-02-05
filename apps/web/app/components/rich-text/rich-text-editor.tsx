@@ -12,7 +12,8 @@ import { paragraphBlocks } from "./blocks/paragraph";
 import { headingBlocks } from "./blocks/heading";
 import { listBlocks } from "./blocks/list";
 import { quoteBlocks } from "./blocks/quote";
-import { textAlignBlocks } from "./blocks/text-align";
+import { audioBlocks } from "./blocks/audio";
+import { withNormalization } from "./plugins/with-normalization";
 
 type Props = {
   initialValue?: Descendant[];
@@ -23,11 +24,14 @@ const blocks: BlocksStore = {
   ...headingBlocks,
   ...listBlocks,
   ...quoteBlocks,
-  ...textAlignBlocks,
+  ...audioBlocks,
 };
 
 export function RichTextEditor({ initialValue }: Props) {
-  const [editor] = React.useState(() => withHistory(withReact(createEditor())));
+  const [editor] = React.useState(() => {
+    const editor = withNormalization(withHistory(withReact(createEditor())));
+    return editor;
+  });
 
   return (
     <Slate
@@ -39,7 +43,7 @@ export function RichTextEditor({ initialValue }: Props) {
       }
     >
       <RichTextProvider blocks={blocks}>
-        <RichTextToolbar className="mb-4" />
+        <RichTextToolbar />
         <RichTextContent />
       </RichTextProvider>
     </Slate>

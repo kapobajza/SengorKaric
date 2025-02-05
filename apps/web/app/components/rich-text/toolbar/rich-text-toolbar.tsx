@@ -1,21 +1,27 @@
 import * as Toolbar from "@radix-ui/react-toolbar";
 import { Editor, Transforms } from "slate";
 import { ReactEditor } from "slate-react";
+import { AlignCenter, AlignLeft, AlignRight, Redo, Undo } from "lucide-react";
+import { useState } from "react";
 
 import { cn } from "@/web/lib/utils";
 import { TooltipProvider } from "@/web/components/ui/tooltip";
 import { modifiers } from "@/web/components/rich-text/modifiers";
+import { RichTextSelectedDropdownNodeMap } from "@/web/components/rich-text/types";
 import type {
   BlocksStore,
   ListBlockFormat,
+  RichTextSelectedDropdownNode,
+  RootNode,
   TextAlign,
 } from "@/web/components/rich-text/types";
 import { useRichText } from "@/web/components/rich-text/provider";
-import { isListNode, isTextAlignNode } from "@/web/components/rich-text/util";
+import { isListNode } from "@/web/components/rich-text/util";
 import { AudioRecordDialog } from "@/web/components/rich-text/audio/audio-record-dialog";
 
 import { RichTextToolbarButton } from "./rich-text-toolbar-button";
 import type { RichTextToolbarButtonProps } from "./rich-text-toolbar-button";
+import { RichTextToolbarDropdownText } from "./rich-text-toolbar-dropdown-text";
 
 function ToggleToolbarButton(
   props: Omit<RichTextToolbarButtonProps, "handleClick"> & {
@@ -146,14 +152,25 @@ function ListButton({
   );
 }
 
-function TextAlignButton({
-  block,
-  align,
-}: {
-  block: BlocksStore["align-center"];
-  align: TextAlign;
-}) {
+function TextAlignButton({ align }: { align: TextAlign }) {
   const { editor } = useRichText();
+  const checkButtonDisabled = () => {
+    if (!editor.selection) {
+      return false;
+    }
+
+    const selectedNode = editor.children[editor.selection.focus.path[0] ?? -1];
+
+    if (!selectedNode) {
+      return false;
+    }
+
+    if ((["audio", "list"] as RootNode["type"][]).includes(selectedNode.type)) {
+      return true;
+    }
+
+    return false;
+  };
 
   const isActive = () => {
     if (!editor.selection) {
@@ -161,49 +178,55 @@ function TextAlignButton({
     }
 
     const selected = editor.children[editor.selection.anchor.path[0] ?? -1];
-
-    if (selected && isTextAlignNode(selected)) {
-      return selected.align === align;
-    }
-
-    return false;
+    return selected?.className === `text-${align}`;
   };
 
   function toggleTextAlign() {
     if (isActive()) {
       Transforms.setNodes(editor, {
-        type: "paragraph",
+        className: "",
       });
       return;
     }
 
     Transforms.setNodes(editor, {
-      type: "text-align",
-      align,
+      className: `text-${align}`,
     });
+  }
+
+  let AlignIcon = AlignLeft;
+
+  if (align === "center") {
+    AlignIcon = AlignCenter;
+  } else if (align === "right") {
+    AlignIcon = AlignRight;
   }
 
   return (
     <ToggleToolbarButton
-      icon={block.icon}
+      icon={AlignIcon}
       name={align}
-      label={block.label}
+      label={`Align ${align}`}
       isActive={isActive()}
-      disabled={false}
+      disabled={checkButtonDisabled()}
       handleClick={toggleTextAlign}
     />
   );
 }
 
 function ToolbarSeparator() {
-  return <Toolbar.Separator className="mx-1 my-auto h-3/4 w-px bg-gray-300" />;
+  return <Toolbar.Separator className="mx-1 my-auto h-5 w-px bg-gray-300" />;
 }
 
 export function RichTextToolbar({
   className,
   ...props
-}: React.ComponentProps<"div">) {
+}: React.ComponentProps<typeof Toolbar.Root>) {
   const { blocks, editor } = useRichText();
+  const [selectedTextType, setSelectedTextType] =
+    useState<RichTextSelectedDropdownNode>(
+      RichTextSelectedDropdownNodeMap.paragraph,
+    );
 
   /**
    * The modifier buttons are disabled when an image is selected.
@@ -230,46 +253,70 @@ export function RichTextToolbar({
 
   return (
     <TooltipProvider>
-      <div
+      <Toolbar.Root
         className={cn(
-          "flex flex-wrap gap-1 rounded-md bg-muted p-1",
+          "flex flex-wrap items-center gap-1 rounded-t-md border border-b-0 border-input bg-muted p-1",
           className,
         )}
         {...props}
       >
-        <Toolbar.Root className="flex">
-          <Toolbar.ToggleGroup type="multiple" className="flex gap-1">
-            {Object.entries(modifiers).map(([name, modifier]) => (
-              <ToggleToolbarButton
-                key={name}
-                name={name}
-                icon={modifier.icon}
-                label={modifier.label}
-                isActive={modifier.checkIsActive(editor)}
-                handleClick={() => {
-                  modifier.handleToggle(editor);
-                }}
-                disabled={isButtonDisabled}
-              />
-            ))}
-          </Toolbar.ToggleGroup>
-          <ToolbarSeparator />
-          <Toolbar.ToggleGroup className="flex gap-1" type="single">
-            <ListButton block={blocks["list-unordered"]} format="unordered" />
-            <ListButton block={blocks["list-ordered"]} format="ordered" />
-          </Toolbar.ToggleGroup>
-          <ToolbarSeparator />
-          <Toolbar.ToggleGroup className="flex gap-1" type="single">
-            <TextAlignButton block={blocks["align-left"]} align="left" />
-            <TextAlignButton block={blocks["align-center"]} align="center" />
-            <TextAlignButton block={blocks["align-right"]} align="right" />
-          </Toolbar.ToggleGroup>
-          <ToolbarSeparator />
-          <Toolbar.ToggleGroup className="flex gap-1" type="single">
-            <AudioRecordDialog />
-          </Toolbar.ToggleGroup>
-        </Toolbar.Root>
-      </div>
+        <Toolbar.ToggleGroup className="flex gap-1" type="single">
+          <RichTextToolbarDropdownText
+            selected={selectedTextType}
+            setSelected={setSelectedTextType}
+          />
+        </Toolbar.ToggleGroup>
+        <ToolbarSeparator />
+        <Toolbar.ToggleGroup type="multiple" className="flex gap-1">
+          {Object.entries(modifiers).map(([name, modifier]) => (
+            <ToggleToolbarButton
+              key={name}
+              name={name}
+              icon={modifier.icon}
+              label={modifier.label}
+              isActive={modifier.checkIsActive(editor)}
+              handleClick={() => {
+                modifier.handleToggle(editor);
+              }}
+              disabled={isButtonDisabled}
+            />
+          ))}
+        </Toolbar.ToggleGroup>
+        <ToolbarSeparator />
+        <Toolbar.ToggleGroup className="flex gap-1" type="single">
+          <ListButton block={blocks["list-unordered"]} format="unordered" />
+          <ListButton block={blocks["list-ordered"]} format="ordered" />
+        </Toolbar.ToggleGroup>
+        <ToolbarSeparator />
+        <Toolbar.ToggleGroup className="flex gap-1" type="single">
+          <TextAlignButton align="left" />
+          <TextAlignButton align="center" />
+          <TextAlignButton align="right" />
+        </Toolbar.ToggleGroup>
+        <ToolbarSeparator />
+        <Toolbar.ToggleGroup className="flex gap-1" type="single">
+          <AudioRecordDialog />
+        </Toolbar.ToggleGroup>
+        <ToolbarSeparator />
+        <Toolbar.ToggleGroup className="flex gap-1" type="single">
+          <RichTextToolbarButton
+            icon={Undo}
+            label="Undo"
+            name="undo"
+            handleClick={() => {
+              editor.undo();
+            }}
+          />
+          <RichTextToolbarButton
+            icon={Redo}
+            label="Redo"
+            name="redo"
+            handleClick={() => {
+              editor.redo();
+            }}
+          />
+        </Toolbar.ToggleGroup>
+      </Toolbar.Root>
     </TooltipProvider>
   );
 }

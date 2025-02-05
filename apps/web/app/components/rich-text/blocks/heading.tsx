@@ -8,8 +8,9 @@ import {
   Heading6,
 } from "lucide-react";
 
-import { baseHandleConvert } from "@/web/components/rich-text/util";
 import type { BlocksStore } from "@/web/components/rich-text/types";
+import { baseHandleConvert } from "@/web/components/rich-text/util";
+import { cn } from "@/web/lib/utils";
 
 /**
  * Common handler for converting a node to a heading
@@ -23,16 +24,19 @@ const handleConvertToHeading = (
 
 export const headingBlocks: Pick<
   BlocksStore,
-  | "heading-one"
-  | "heading-two"
-  | "heading-three"
-  | "heading-four"
-  | "heading-five"
-  | "heading-six"
+  | "heading-1"
+  | "heading-2"
+  | "heading-3"
+  | "heading-4"
+  | "heading-5"
+  | "heading-6"
 > = {
-  "heading-one": {
+  "heading-1": {
     renderElement: (props) => (
-      <h1 className="text-5xl font-bold" {...props.attributes}>
+      <h1
+        className={cn("text-5xl font-bold", props.element.className)}
+        {...props.attributes}
+      >
         {props.children}
       </h1>
     ),
@@ -45,9 +49,12 @@ export const headingBlocks: Pick<
     isInBlocksSelector: true,
     snippets: ["#"],
   },
-  "heading-two": {
+  "heading-2": {
     renderElement: (props) => (
-      <h2 className="text-4xl font-bold" {...props.attributes}>
+      <h2
+        className={cn("text-4xl font-bold", props.element.className)}
+        {...props.attributes}
+      >
         {props.children}
       </h2>
     ),
@@ -60,9 +67,12 @@ export const headingBlocks: Pick<
     isInBlocksSelector: true,
     snippets: ["##"],
   },
-  "heading-three": {
+  "heading-3": {
     renderElement: (props) => (
-      <h3 className="text-3xl font-bold" {...props.attributes}>
+      <h3
+        className={cn("text-3xl font-bold", props.element.className)}
+        {...props.attributes}
+      >
         {props.children}
       </h3>
     ),
@@ -75,9 +85,12 @@ export const headingBlocks: Pick<
     isInBlocksSelector: true,
     snippets: ["###"],
   },
-  "heading-four": {
+  "heading-4": {
     renderElement: (props) => (
-      <h4 className="text-2xl font-semibold" {...props.attributes}>
+      <h4
+        className={cn("text-2xl font-semibold", props.element.className)}
+        {...props.attributes}
+      >
         {props.children}
       </h4>
     ),
@@ -90,9 +103,12 @@ export const headingBlocks: Pick<
     isInBlocksSelector: true,
     snippets: ["####"],
   },
-  "heading-five": {
+  "heading-5": {
     renderElement: (props) => (
-      <h5 className="text-xl font-semibold" {...props.attributes}>
+      <h5
+        className={cn("text-xl font-semibold", props.element.className)}
+        {...props.attributes}
+      >
         {props.children}
       </h5>
     ),
@@ -105,9 +121,12 @@ export const headingBlocks: Pick<
     isInBlocksSelector: true,
     snippets: ["#####"],
   },
-  "heading-six": {
+  "heading-6": {
     renderElement: (props) => (
-      <h6 className="text-lg font-semibold" {...props.attributes}>
+      <h6
+        className={cn("text-lg font-semibold", props.element.className)}
+        {...props.attributes}
+      >
         {props.children}
       </h6>
     ),

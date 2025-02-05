@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import type { ComponentRef } from "react";
 import { AudioLines } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { Transforms } from "slate";
 
 import {
   Dialog,
@@ -11,10 +12,12 @@ import {
   DialogTitle,
 } from "@/web/components/ui/dialog";
 import { RichTextToolbarButton } from "@/web/components/rich-text/toolbar/rich-text-toolbar-button";
+import { useRichText } from "@/web/components/rich-text/provider";
 
 import { AudioRecordButton } from "./audio-record-button";
 
 export function AudioRecordDialog() {
+  const { editor } = useRichText();
   const [open, setOpen] = useState(false);
   const [isAudioRecording, setIsAudioRecording] = useState(false);
   const audioButtonRef = useRef<ComponentRef<typeof AudioRecordButton>>(null);
@@ -49,7 +52,22 @@ export function AudioRecordDialog() {
             ref={audioButtonRef}
             isRecording={isAudioRecording}
             setIsRecording={setIsAudioRecording}
-            onRecordingStop={() => {}}
+            onRecordingStop={(blob) => {
+              Transforms.insertNodes(editor, {
+                type: "paragraph",
+                children: [{ text: "Bla bla bla", type: "text" }],
+              });
+              Transforms.insertNodes(editor, {
+                type: "audio",
+                src: URL.createObjectURL(blob),
+                children: [{ text: "", type: "text" }],
+              });
+              Transforms.insertNodes(editor, {
+                type: "paragraph",
+                children: [{ text: "", type: "text" }],
+              });
+              setOpen(false);
+            }}
             className="rounded-full border-2 border-black p-3 dark:border-white [&>:svg]:size-6"
           />
           {isAudioRecording ? (

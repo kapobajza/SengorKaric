@@ -18,11 +18,21 @@ export const audioBlocks: Pick<BlocksStore, "audio"> = {
       }
 
       return (
-        <audio controls src={props.element.src}>
-          <track kind="captions">This is a track</track>
-          Your browser does not support the audio element.
-        </audio>
+        <div>
+          <audio
+            controls
+            src={props.element.src}
+            {...props.attributes}
+            data-slate-void={true}
+          >
+            <track kind="captions" />
+          </audio>
+          {props.children}
+        </div>
       );
+    },
+    handleEnterKey() {
+      // Prevent default behavior by doing nothing
     },
   },
 };

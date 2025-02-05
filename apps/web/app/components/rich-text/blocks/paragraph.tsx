@@ -9,7 +9,11 @@ import { baseHandleConvert } from "@/web/components/rich-text/util";
 
 export const paragraphBlocks: Pick<BlocksStore, "paragraph"> = {
   paragraph: {
-    renderElement: (props) => <p {...props.attributes}>{props.children}</p>,
+    renderElement: (props) => (
+      <p {...props.attributes} className={props.element.className}>
+        {props.children}
+      </p>
+    ),
     icon: LetterText,
     label: "Text",
     matchNode: (node) => node.type === "paragraph",
