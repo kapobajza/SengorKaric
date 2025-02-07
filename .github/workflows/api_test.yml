@@ -31,4 +31,4 @@ jobs:
           }' > apps/api/gc_service_acc.json
        
       - name: Run tests
-        run: --filter api run test --hook-timeout=30000
+        run: DEBUG=testcontainers* pnpm --filter api run test --hook-timeout=30000
