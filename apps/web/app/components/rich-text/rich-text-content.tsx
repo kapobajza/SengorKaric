@@ -8,7 +8,7 @@ import { Textarea } from "@/web/components/ui/textarea";
 import type { BlocksStore } from "./types";
 import { modifiers } from "./modifiers";
 import type { ModifiersStore } from "./modifiers";
-import { useRichText } from "./rich-text-provider";
+import { useRichText } from "./provider";
 
 type BaseRenderElementProps = {
   props: RenderElementProps;

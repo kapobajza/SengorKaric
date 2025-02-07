@@ -1,0 +1,18 @@
+name: Run Web tests
+
+on: [pull_request]
+
+jobs:
+  test:
+    name: Run Web tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        uses: ./.github/actions/pnpm_install
+
+      - name: Run tests
+        run: pnpm --filter web run test

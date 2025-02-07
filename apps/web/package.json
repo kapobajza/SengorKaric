@@ -7,7 +7,8 @@
     "dev": "react-router dev",
     "dev:local": "react-router dev --mode localhost",
     "start": "cross-env NODE_ENV=production react-router-serve ./build/server/index.js",
-    "typecheck": "react-router typegen && tsc",
+    "typegen": "react-router typegen",
+    "tsc": "react-router typegen && tsc",
     "lint": "eslint"
   },
   "dependencies": {

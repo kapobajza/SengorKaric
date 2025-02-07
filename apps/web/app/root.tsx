@@ -19,7 +19,7 @@ import { ENV_PUBLIC_KEY_PREFIX, publicEnvSchema } from "@/web/env/schema";
 
 import stylesheet from "./app.css?url";
 import type { Route } from "./+types/root";
-import { ApiProvider } from "./providers/api-provider";
+import { ApiProvider } from "./providers/api";
 import { api } from "./networking/instance";
 import { ClientHintCheck } from "./components/client-hint-check";
 import { useDehydratedState } from "./hooks/use-dehydrated-state";

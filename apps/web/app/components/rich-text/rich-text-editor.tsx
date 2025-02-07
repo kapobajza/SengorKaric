@@ -4,15 +4,16 @@ import type { Descendant } from "slate";
 import { withHistory } from "slate-history";
 import { Slate, withReact } from "slate-react";
 
-import { RichTextToolbar } from "./rich-text-toolbar";
+import { RichTextToolbar } from "./toolbar/rich-text-toolbar";
 import { RichTextContent } from "./rich-text-content";
-import { RichTextProvider } from "./rich-text-provider";
+import { RichTextProvider } from "./provider/rich-text-provider";
 import type { BlocksStore } from "./types";
 import { paragraphBlocks } from "./blocks/paragraph";
 import { headingBlocks } from "./blocks/heading";
 import { listBlocks } from "./blocks/list";
 import { quoteBlocks } from "./blocks/quote";
 import { textAlignBlocks } from "./blocks/text-align";
+import { audioBlocks } from "./blocks/audio";
 
 type Props = {
   initialValue?: Descendant[];
@@ -24,6 +25,7 @@ const blocks: BlocksStore = {
   ...listBlocks,
   ...quoteBlocks,
   ...textAlignBlocks,
+  ...audioBlocks,
 };
 
 export function RichTextEditor({ initialValue }: Props) {

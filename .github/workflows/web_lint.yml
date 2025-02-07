@@ -1,0 +1,21 @@
+name: Run Web ESLint
+
+on: [pull_request]
+
+jobs:
+  test:
+    name: Run Web ESLint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        uses: ./.github/actions/pnpm_install
+
+      - name: Run RR typegen
+        run: pnpm --filter web run typegen
+
+      - name: Run lint
+        run: pnpm --filter web run lint

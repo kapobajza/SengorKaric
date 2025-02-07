@@ -1,4 +1,4 @@
-import * as React from "react";
+import type * as React from "react";
 import * as ToastPrimitives from "@radix-ui/react-toast";
 import { cva } from "class-variance-authority";
 import type { VariantProps } from "class-variance-authority";

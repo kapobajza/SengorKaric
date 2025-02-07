@@ -2,7 +2,7 @@ import React from "react";
 import type { ComponentProps } from "react";
 import { MoonIcon, SunIcon } from "lucide-react";
 
-import { SidebarTrigger } from "@/web/components/ui/sidebar";
+import { SidebarTrigger } from "@/web/components/ui/sidebar/sidebar";
 import { cn } from "@/web/lib/utils";
 import { Button } from "@/web/components/ui/button";
 import { useMeQueryCached } from "@/web/query/user.query";
@@ -25,7 +25,9 @@ function ProfileDropdown() {
   const { data, isLoading } = useMeQueryCached();
   const formRef = React.useRef<HTMLFormElement>(null);
 
-  if (isLoading || !data) return null;
+  if (isLoading || !data) {
+    return null;
+  }
 
   return (
     <DropdownMenu modal={false}>

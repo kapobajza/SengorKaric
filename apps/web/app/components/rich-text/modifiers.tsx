@@ -6,7 +6,9 @@ type ModifierKey = Exclude<keyof Text, "type" | "text" | "code">;
 
 const baseCheckIsActive = (editor: Editor, name: ModifierKey) => {
   const marks = Editor.marks(editor);
-  if (!marks) return false;
+  if (!marks) {
+    return false;
+  }
 
   return Boolean(marks[name]);
 };

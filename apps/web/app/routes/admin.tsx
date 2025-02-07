@@ -1,7 +1,7 @@
 import { Outlet } from "react-router";
 
 import AdminSidebar from "@/web/admin/components/admin-sidebar";
-import { SidebarProvider } from "@/web/components/ui/sidebar";
+import { SidebarProvider } from "@/web/components/ui/sidebar/sidebar";
 import AdminHeader from "@/web/admin/components/admin-header";
 import { api } from "@/web/networking/instance";
 import { redirectToLogin } from "@/web/lib/session.server";

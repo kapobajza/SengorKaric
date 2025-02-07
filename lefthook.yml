@@ -5,16 +5,12 @@ pre-commit:
       files: git diff --name-only --staged
       glob: "*.{js,ts,jsx,tsx,json}"
       run: |
-        set -e
-        npx prettier --write {files}
-        git add {files}
+        node ./scripts/run_lefthook_cmd.js --cmd "npx" --args "prettier --write {files}" --files "{files}"
     lint:
       files: git diff --name-only --staged
       glob: "*.{js,ts,jsx,tsx}"
       run: |
-        set -e
-        npx lefthook run lint
-        git add {files}
+        node ./scripts/run_lefthook_cmd.js --cmd "npx" --args "lefthook run lint" --files "{files}"
 
 commit-msg:
   parallel: true
@@ -28,15 +24,12 @@ lint:
     api:
       files: git diff --name-only --staged
       run: |
-        set -e
         node ./scripts/lint_relative_paths.js --path "apps/api"
     toolkit:
       files: git diff --name-only --staged
       run: |
-        set -e
         node ./scripts/lint_relative_paths.js --path "libs/toolkit"
     web:
       files: git diff --name-only --staged
       run: |
-        set -e
         node ./scripts/lint_relative_paths.js --path "apps/web"

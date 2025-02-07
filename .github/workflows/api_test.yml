@@ -1,0 +1,34 @@
+name: Run API tests
+
+on: [pull_request]
+
+jobs:
+  test:
+    name: Run API tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        uses: ./.github/actions/pnpm_install
+      
+      - name: Create mock GC service acc JSON file
+        run: |
+          echo '{
+            "type": "test",
+            "project_id": "test",
+            "private_key_id": "test",
+            "private_key": "test",
+            "client_email": "test",
+            "client_id": "test",
+            "auth_uri": "test",
+            "token_uri": "test",
+            "auth_provider_x509_cert_url": "test",
+            "client_x509_cert_url": "test",
+            "universe_domain": "test"
+          }' > apps/api/gc_service_acc.json
+       
+      - name: Run tests
+        run: DEBUG=testcontainers* pnpm --filter api run test --hook-timeout=30000

@@ -12,7 +12,9 @@ import { GoogleCheckQuery } from "@/api/features/auth/auth.types";
 
 export async function buildTestApp() {
   const app = Fastify();
-  const postgresContainer = await new PostgreSqlContainer().start();
+  const postgresContainer = await new PostgreSqlContainer(
+    "postgres:17.2-alpine",
+  ).start();
 
   const sessionSecret = Array.from({ length: 64 })
     .map(() => "1")

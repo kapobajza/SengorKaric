@@ -53,6 +53,12 @@ type HeadingBlockNode = {
   children: DefaultInlineNode[];
 } & BaseNode;
 
+export type AudioBlockNode = {
+  type: "audio";
+  src: string;
+  children: DefaultInlineNode[];
+} & BaseNode;
+
 export type TextAlign = "left" | "center" | "right";
 
 export type TextAlignBlockNode = {
@@ -76,7 +82,8 @@ type RootNode =
   | CodeBlockNode
   | HeadingBlockNode
   | ListBlockNode
-  | TextAlignBlockNode;
+  | TextAlignBlockNode
+  | AudioBlockNode;
 
 export type BlocksValue = RootNode[];
 
@@ -126,6 +133,7 @@ export const selectorBlockKeys = [
   "align-left",
   "align-center",
   "align-right",
+  "audio",
 ] as const;
 
 export type SelectorBlockKey = (typeof selectorBlockKeys)[number];
