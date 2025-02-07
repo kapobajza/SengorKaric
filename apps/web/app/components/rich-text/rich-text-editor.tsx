@@ -13,6 +13,7 @@ import { headingBlocks } from "./blocks/heading";
 import { listBlocks } from "./blocks/list";
 import { quoteBlocks } from "./blocks/quote";
 import { textAlignBlocks } from "./blocks/text-align";
+import { audioBlocks } from "./blocks/audio";
 
 type Props = {
   initialValue?: Descendant[];
@@ -24,6 +25,7 @@ const blocks: BlocksStore = {
   ...listBlocks,
   ...quoteBlocks,
   ...textAlignBlocks,
+  ...audioBlocks,
 };
 
 export function RichTextEditor({ initialValue }: Props) {

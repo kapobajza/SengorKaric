@@ -1,0 +1,16 @@
+name: Run TypeScript compiler
+
+on: [pull_request]
+
+jobs:
+  test:
+    name: Run Web TypeScript compiler
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        uses: ./.github/actions/pnpm_install
+      - name: Run tsc
+        run: pnpm --filter web run tsc

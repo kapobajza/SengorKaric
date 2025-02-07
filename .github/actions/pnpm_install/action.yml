@@ -1,0 +1,18 @@
+name: Runs pnpm install
+description: 'Runs pnpm install and takes care of caching'
+runs:
+  using: 'composite'
+  steps:
+    - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          run_install: false
+
+    - name: Install Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: '.nvmrc'
+        cache: 'pnpm'
+
+    - name: Install dependencies
+      run: pnpm install
