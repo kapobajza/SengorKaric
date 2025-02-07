@@ -2,7 +2,7 @@ const yargs = require("yargs");
 const { minimatch } = require("minimatch");
 const { spawnSync } = require("child_process");
 const path = require("path");
-const {executeCmd} = require('./util')
+const { executeCmd } = require("./util");
 
 const args = process.argv.slice(2);
 
@@ -23,11 +23,11 @@ const argv = yargs(args)
   .parse();
 
 const res = executeCmd(argv.cmd, argv.args ? argv.args.split(" ") : [], {
-  stdio: 'inherit',
+  stdio: "inherit",
 });
 
 if (!res.isError) {
-  executeCmd("git", ["add", argv.files], {
-    stdio: 'inherit',
+  executeCmd("git", ["add", ...argv.files.split(" ")], {
+    stdio: "inherit",
   });
 }
