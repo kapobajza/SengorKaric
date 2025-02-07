@@ -43,7 +43,7 @@ services:
             - ./apps/web/.react-router/
 
   db:
-    image: postgres:17.2
+    image: postgres:17.2-alpine
     restart: always
     env_file: ./apps/api/.env.local
     healthcheck:
