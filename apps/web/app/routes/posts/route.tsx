@@ -1,19 +1,14 @@
-import React from 'react'
 import type { Route } from "./+types/route";
 import { dehydratedQueryResponse } from '@/web/query/util';
-import { meQueryOptions } from '@/web/query/user.query';
-import PostCard from './components/post-card';
 import PostCardList from './components/posts-list';
+import { postsQueryOptions } from '@/web/query/post.query';
 
-type Props = {}
 export async function loader({ request }: Route.LoaderArgs) {
-  return dehydratedQueryResponse(request, meQueryOptions);
+  return dehydratedQueryResponse(request, postsQueryOptions);
 }
 
-export default function route({}: Props) {
+export default function route() {
   return (
-    <div>
-        <PostCardList limit={0} showPagination={false}></PostCardList>
-    </div>
+        <PostCardList></PostCardList>
   )
 }

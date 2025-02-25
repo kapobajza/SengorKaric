@@ -3,24 +3,19 @@ import { defineQueryOptions } from "./util";
 
 const postsQueryPrefix = "posts";
 
-export const postQueryKey = {
-    id: [postsQueryPrefix, "id"],
+export const postsQueryKey = {
+    home: [postsQueryPrefix, "home"],
 } as const;
 
-export const postQueryOptions = defineQueryOptions({
-    queryKey: postQueryKey.id,
+export const postsQueryOptions = defineQueryOptions({
+    queryKey: postsQueryKey.home,
     queryFn({ api }) {
         return api.postApi.getAllPosts();
     },
 });
 
-export function usePostQuery() {
-    return useQuery(postQueryOptions);
-}
+export function usePostsQuery() {
+    return useQuery(postsQueryOptions);
+}    
+ 
 
-export function usePostQueryCached() {
-    return useQuery({
-        ...postQueryOptions,
-        staleTime: Infinity,
-    });
-}

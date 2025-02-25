@@ -1,27 +1,22 @@
-import React from 'react'
 import PostCard from './post-card'
-import { usePostQueryCached } from '@/web/query/post.query'
-import { cn } from '@/web/lib/utils';
+import { usePostsQuery } from '@/web/query/post.query';
+import { Link } from 'react-router';
 
-type PostListProps = {
-  limit: number;
-  showPagination: boolean;
-  grid?: string;
-}
+export default function PostCardList() {
+  const { data, isLoading } = usePostsQuery();
 
-export default function PostCardList({ grid }: PostListProps) {
-  const { data, isLoading } = usePostQueryCached();
-
-  if (isLoading || !data) return <div>Loading...</div>; // Možemo dodati loading indicator.
+  if (isLoading || !data) return <div>Loading...</div>; 
 
   return (
-    <div className={cn("grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4", grid)}>
+    <div className="max-w-6xl mx-auto p-6">
+      <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
       {data.map((post) => (
-        <div 
+        <Link to={post.id} className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-shadow"
           key={post.id}>
           <PostCard post={post} />
-        </div>
+        </Link>
       ))}
+    </div>
     </div>
   );
 }
