@@ -1,5 +1,4 @@
 import { Link } from "react-router";
-
 import { Button } from "@/web/components/ui/button";
 
 export default function Index() {

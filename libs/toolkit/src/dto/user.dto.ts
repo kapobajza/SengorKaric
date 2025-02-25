@@ -8,3 +8,5 @@ export const meUserDtoSchema = z.object({
 });
 
 export type UserMeDto = z.infer<typeof meUserDtoSchema>;
+
+

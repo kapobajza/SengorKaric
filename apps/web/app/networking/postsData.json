@@ -1,0 +1,78 @@
+[
+  {
+    "id": "post-001",
+    "title": "Mastering React Query: Efficient Data Fetching",
+    "categories": [
+      { "name": "Frontend" },
+      { "name": "State" },
+      { "name": "Performance" }
+    ],
+    "content": [
+      {
+        "text": "Donec in vehicula lorem. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer ac felis in nunc auctor feugiat. Curabitur ut dui sed arcu posuere consequat. Praesent eget arcu ut libero tincidunt tristique. Etiam ultrices felis in sapien viverra, id laoreet urna egestas. Proin gravida purus eget erat ultrices, in fermentum libero vulputate. Vivamus congue, justo eget dignissim tincidunt, sapien lectus dapibus justo, nec tristique nisl metus vel erat. Vestibulum elementum felis eget mauris sagittis, et scelerisque eros suscipit. Sed sodales, erat id vestibulum ultrices, nunc lacus facilisis lacus, ut ultricies nisi turpis in sapien. Nam tincidunt augue sit amet ligula tempus, non vehicula enim vehicula."
+      }
+    ],
+    "createdAt": "2025-02-24T08:30:00.000Z",
+    "updatedAt": "2025-02-24T10:45:00.000Z"
+  },
+  {
+    "id": "post-002",
+    "title": "React Router: Navigating Single Page Applications",
+    "categories": [
+      { "name": "Routing" },
+      { "name": "React" }
+    ],
+    "content": [
+      {
+        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis imperdiet leo sed diam tincidunt, et efficitur eros facilisis. Morbi id libero nec est dignissim convallis. Vivamus scelerisque urna ac ligula hendrerit, id ullamcorper arcu accumsan. Cras ut risus id ex lacinia malesuada. Mauris laoreet risus a risus fermentum, non bibendum arcu dapibus. Suspendisse interdum tincidunt augue, at convallis lectus viverra ac."
+      }
+    ],
+    "createdAt": "2025-02-24T09:00:00.000Z",
+    "updatedAt": "2025-02-24T11:15:00.000Z"
+  },
+  {
+    "id": "post-003",
+    "title": "Building Scalable Applications with Angular and .NET",
+    "categories": [
+      { "name": "Angular" },
+      { "name": "Web Development" }
+    ],
+    "content": [
+      {
+        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean tristique risus vitae felis efficitur, ut tempor nisi vulputate. Phasellus et mauris in eros dapibus tristique. Vestibulum laoreet consectetur ante at malesuada. Ut consectetur metus eget ligula ullamcorper, in dictum purus tincidunt. Sed efficitur vehicula erat, eget egestas felis malesuada at. Cras nec eros sed eros ullamcorper pellentesque."
+      }
+    ],
+    "createdAt": "2025-02-24T07:45:00.000Z",
+    "updatedAt": "2025-02-24T10:00:00.000Z"
+  },
+  {
+    "id": "post-004",
+    "title": "Deep Dive into Angular Directives and Components",
+    "categories": [
+      { "name": "Angular" },
+      { "name": "UI Components" }
+    ],
+    "content": [
+      {
+        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed pharetra erat id magna interdum, a dapibus mi vehicula. Proin ultricies, sapien vel tempus tincidunt, lorem nunc auctor ligula, eget pharetra nunc metus nec quam. Integer et eros varius, laoreet magna ut, iaculis nulla. Sed sed semper lacus, in eleifend lorem."
+      }
+    ],
+    "createdAt": "2025-02-24T08:15:00.000Z",
+    "updatedAt": "2025-02-24T11:30:00.000Z"
+  },
+  {
+    "id": "post-005",
+    "title": "State Management in Angular: NgRx and Services",
+    "categories": [
+      { "name": "Angular" },
+      { "name": "State Management" }
+    ],
+    "content": [
+      {
+        "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam volutpat ipsum at ligula mollis, nec dictum lacus ultricies. Suspendisse euismod neque vitae felis sagittis, a laoreet odio tincidunt. Morbi congue lorem ut felis faucibus hendrerit. Nam ac tincidunt libero. Donec non facilisis odio, at volutpat nulla. Aliquam erat volutpat."
+      }
+    ],
+    "createdAt": "2025-02-24T07:30:00.000Z",
+    "updatedAt": "2025-02-24T10:30:00.000Z"
+  }
+]
